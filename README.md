@@ -44,17 +44,4 @@ A sleek, responsive anime discovery web app powered directly by the official [An
   - <kbd>Space</kbd> or <kbd>Enter</kbd>: Roll Random Anime!
   - <kbd>Esc</kbd>: Close open modals.
 
----
 
-## 🚀 How to Run
-
-Because this is built with modern standard web technologies (HTML5, Vanilla CSS, ES6+ JavaScript) and connects to AniList's CORS-enabled GraphQL endpoint:
-
-1. **Directly open in any browser**:
-   Double click or open `index.html` in Microsoft Edge, Google Chrome, Firefox, or Brave:
-   ```
-   file:///C:/Users/HP 800G1/.gemini/antigravity-ide/scratch/anime-randomizer/index.html
-   ```
-
-2. **Or open with any local server**:
-   You can also host it via any static file server if desired.
