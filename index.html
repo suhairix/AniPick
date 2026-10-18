@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="AniPick - Discover your next favorite anime with an intelligent, highly customizable anime randomizer powered by the AniList GraphQL API. Filter by genres, ratings, eras, and formats.">
+  <meta name="theme-color" content="#0b0d17">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>AniPick — Intelligent Anime Randomizer & Discovery Engine</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Ambient background decorative glows -->
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+  <div class="ambient-glow glow-3" aria-hidden="true"></div>
+
+  <!-- Main App Shell -->
+  <div class="app-layout">
+
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+      <div class="header-left">
+        <a href="#" class="brand-logo" id="logo-link" aria-label="AniPick Home">
+          <div class="logo-icon-wrap">
+            <svg class="dice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <circle cx="8" cy="8" r="1.5" fill="currentColor"></circle>
+              <circle cx="16" cy="8" r="1.5" fill="currentColor"></circle>
+              <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+              <circle cx="8" cy="16" r="1.5" fill="currentColor"></circle>
+              <circle cx="16" cy="16" r="1.5" fill="currentColor"></circle>
+            </svg>
+            <span class="sparkle-dot"></span>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">AniPick<span class="brand-dot">.</span></div>
+            <span class="brand-tagline">Powered by AniList GraphQL</span>
+          </div>
+        </a>
+
+        <div class="api-status-pill" id="api-status-pill" title="Live AniList GraphQL API Connection">
+          <span class="status-indicator"></span>
+          <span class="status-text" id="status-text">AniList Online</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- SFX Mute/Unmute Toggle -->
+        <button class="nav-icon-btn" id="sfx-toggle-btn" title="Toggle Sound Effects" aria-label="Toggle Sound Effects">
+          <svg class="sfx-on-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg class="sfx-off-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+
+        <!-- History Button -->
+        <button class="nav-action-btn" id="history-modal-btn" aria-label="View Roll History">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>History</span>
+          <span class="count-badge" id="history-count">0</span>
+        </button>
+
+        <!-- Watchlist Button -->
+        <button class="nav-action-btn" id="watchlist-modal-btn" aria-label="View Saved Watchlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>Watchlist</span>
+          <span class="count-badge primary-badge" id="watchlist-count">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- Quick Curated Presets Bar -->
+      <section class="presets-section" aria-label="Genre Presets">
+        <div class="presets-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spark-icon">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          <span>Quick Presets:</span>
+        </div>
+        <div class="presets-scroll" id="presets-list">
+          <button type="button" class="preset-chip active" data-preset="all">
+            <span class="preset-emoji">✨</span> Any Genre
+          </button>
+          <button type="button" class="preset-chip" data-preset="shonen">
+            <span class="preset-emoji">⚔️</span> Shonen Hype
+          </button>
+          <button type="button" class="preset-chip" data-preset="romance">
+            <span class="preset-emoji">🌸</span> Sweet Romance
+          </button>
+          <button type="button" class="preset-chip" data-preset="psychological">
+            <span class="preset-emoji">🧠</span> Mind Games & Thriller
+          </button>
+          <button type="button" class="preset-chip" data-preset="cozy">
+            <span class="preset-emoji">☕</span> Cozy Slice of Life
+          </button>
+          <button type="button" class="preset-chip" data-preset="cyberpunk">
+            <span class="preset-emoji">🚀</span> Sci-Fi & Mecha
+          </button>
+          <button type="button" class="preset-chip" data-preset="fantasy">
+            <span class="preset-emoji">🔮</span> Magic & Fantasy
+          </button>
+          <button type="button" class="preset-chip" data-preset="comedy">
+            <span class="preset-emoji">😂</span> Pure Comedy
+          </button>
+          <button type="button" class="preset-chip" data-preset="music">
+            <span class="preset-emoji">🎵</span> Music & Bands
+          </button>
+          <button type="button" class="preset-chip" data-preset="isekai">
+            <span class="preset-emoji">🌀</span> Isekai & Fantasy
+          </button>
+        </div>
+      </section>
+
+      <!-- Primary Grid: Filter Deck (Left/Top) + Hero Showcase (Right/Center) -->
+      <div class="app-grid">
+
+        <!-- Controls & Genre Deck -->
+        <aside class="control-panel-card" id="filter-deck">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
+              <h2>Filter & Customize</h2>
+            </div>
+            <button type="button" class="text-link-btn" id="reset-filters-btn" title="Reset all filters to default">
+              Reset All
+            </button>
+          </div>
+
+          <!-- Genre Matrix Section -->
+          <div class="filter-group">
+            <div class="filter-group-header">
+              <label class="filter-label">
+                Genres
+                <span class="filter-hint" id="genre-hint-count">0 selected</span>
+              </label>
+              <div class="genre-mode-toggle" title="Switch between matching ANY or ALL selected genres">
+                <button type="button" class="genre-mode-btn active" id="mode-any-btn" data-mode="ANY">Any (OR)</button>
+                <button type="button" class="genre-mode-btn" id="mode-all-btn" data-mode="ALL">All (AND)</button>
+              </div>
+            </div>
+
+            <!-- Genre Selection Grid -->
+            <div class="genre-chip-grid" id="genre-chip-grid">
+              <!-- Dynamically populated or filled with fallback genres -->
+            </div>
+
+            <div class="genre-quick-actions">
+              <button type="button" class="mini-btn" id="select-all-genres-btn">Select All</button>
+              <button type="button" class="mini-btn" id="clear-all-genres-btn">Clear Genres</button>
+              <span class="action-tip">💡 Shift-click or right-click to exclude</span>
+            </div>
+          </div>
+
+          <!-- Custom Preferences & Subgenres Section -->
+          <div class="filter-group custom-tags-group">
+            <div class="filter-group-header">
+              <label class="filter-label">
+                Custom Tags & Themes
+                <span class="filter-hint" id="custom-tags-hint">Add your own</span>
+              </label>
+            </div>
+
+            <!-- Add Custom Tag Input Form -->
+            <form id="add-custom-tag-form" class="custom-tag-form" onsubmit="return false;">
+              <div class="input-with-button">
+                <input type="text" id="custom-genre-input" list="anilist-tags-datalist"
+                  placeholder="e.g. Band, Idol, Isekai, Cyberpunk..." class="styled-input custom-input"
+                  autocomplete="off">
+                <button type="submit" id="add-custom-tag-btn" class="mini-btn add-accent-btn"
+                  title="Add this custom preference">
+                  + Add
+                </button>
+              </div>
+              <datalist id="anilist-tags-datalist">
+                <!-- Dynamically populated from AniList 420+ MediaTagCollection -->
+              </datalist>
+            </form>
+
+            <!-- Popular Tag Suggestions Quick-Add -->
+            <div class="popular-suggestions-wrap">
+              <span class="suggestions-label">Popular tags:</span>
+              <div class="suggestions-chips" id="popular-suggestions-list">
+                <button type="button" class="suggestion-chip" data-tag="Band">🎸 Band</button>
+                <button type="button" class="suggestion-chip" data-tag="Idol">🎤 Idol</button>
+                <button type="button" class="suggestion-chip" data-tag="Isekai">🌀 Isekai</button>
+                <button type="button" class="suggestion-chip" data-tag="School">🏫 School</button>
+                <button type="button" class="suggestion-chip" data-tag="Cyberpunk">🤖 Cyberpunk</button>
+                <button type="button" class="suggestion-chip" data-tag="Time Travel">⏳ Time Travel</button>
+                <button type="button" class="suggestion-chip" data-tag="Super Power">⚡ Super Power</button>
+                <button type="button" class="suggestion-chip" data-tag="Martial Arts">🥋 Martial Arts</button>
+              </div>
+            </div>
+
+            <!-- Custom User-Added Tags Grid -->
+            <div class="custom-chip-grid" id="custom-chip-grid">
+              <!-- Dynamically populated from STATE.customTags -->
+            </div>
+          </div>
+
+          <!-- Advanced Filters Collapsible / Settings -->
+          <div class="filter-accordion">
+            <button type="button" class="accordion-trigger" id="adv-filter-toggle" aria-expanded="true">
+              <div class="accordion-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                  </path>
+                </svg>
+                <span>Format, Rating & Era</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            <div class="accordion-content" id="adv-filter-content">
+              <!-- Discovery Strategy / Mode -->
+              <div class="filter-item">
+                <label for="filter-mode" class="filter-sublabel">Discovery Pool</label>
+                <select id="filter-mode" class="styled-select">
+                  <option value="POPULARITY_DESC">🌟 Popular All-Stars (Top 200)</option>
+                  <option value="SCORE_DESC">🏆 Highest Rated (Critically Acclaimed)</option>
+                  <option value="HIDDEN_GEMS">💎 Hidden Gems (High Score, Lower Hype)</option>
+                  <option value="WILDCARD" selected>🎲 Deep Cut Wildcard (Broad Discovery)</option>
+                  <option value="TRENDING_DESC">⚡ Currently Trending</option>
+                </select>
+              </div>
+
+              <!-- Media Format -->
+              <div class="filter-item">
+                <label for="filter-format" class="filter-sublabel">Format</label>
+                <select id="filter-format" class="styled-select">
+                  <option value="ANY">Any Format</option>
+                  <option value="TV">TV Series</option>
+                  <option value="MOVIE">Anime Movie</option>
+                  <option value="OVA_ONA">OVA / ONA Series</option>
+                  <option value="SPECIAL">Special</option>
+                </select>
+              </div>
+
+              <!-- Minimum Rating / Score Slider -->
+              <div class="filter-item">
+                <div class="slider-header">
+                  <label for="filter-score" class="filter-sublabel">Min Score</label>
+                  <span class="slider-value" id="score-display">Any Score</span>
+                </div>
+                <input type="range" id="filter-score" min="0" max="85" step="5" value="0" class="styled-range">
+                <div class="range-ticks">
+                  <span>Any</span>
+                  <span>60%</span>
+                  <span>70%</span>
+                  <span>80%</span>
+                  <span>85%+</span>
+                </div>
+              </div>
+
+              <!-- Release Era / Decade -->
+              <div class="filter-item">
+                <label for="filter-era" class="filter-sublabel">Release Era</label>
+                <select id="filter-era" class="styled-select">
+                  <option value="ANY">Any Year</option>
+                  <option value="2020">Modern (2020 - Present)</option>
+                  <option value="2010">2010s Golden Wave</option>
+                  <option value="2000">2000s Classic Era</option>
+                  <option value="1990">90s & Retro (Pre-2000)</option>
+                </select>
+              </div>
+
+              <!-- Airing Status -->
+              <div class="filter-item">
+                <label for="filter-status" class="filter-sublabel">Airing Status</label>
+                <select id="filter-status" class="styled-select">
+                  <option value="ANY">Any Status</option>
+                  <option value="FINISHED">Finished Airing</option>
+                  <option value="RELEASING">Currently Airing</option>
+                </select>
+              </div>
+
+              <!-- SFW Toggle -->
+              <div class="filter-checkbox-item">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="sfw-only-checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+                <div class="toggle-label-wrap">
+                  <span class="toggle-title">Safe For Work (SFW)</span>
+                  <span class="toggle-desc">Exclude adult/18+ media</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Randomizer Showcase Arena -->
+        <section class="randomizer-arena" aria-live="polite">
+
+          <!-- Master Roll Command Deck -->
+          <div class="roll-command-deck">
+            <div class="roll-cta-group">
+              <button type="button" class="btn-roll-master" id="roll-anime-btn" aria-label="Randomize and roll anime">
+                <div class="btn-glow-layer"></div>
+                <div class="btn-inner">
+                  <svg class="dice-spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <circle cx="8" cy="8" r="1.5" fill="currentColor"></circle>
+                    <circle cx="16" cy="8" r="1.5" fill="currentColor"></circle>
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+                    <circle cx="8" cy="16" r="1.5" fill="currentColor"></circle>
+                    <circle cx="16" cy="16" r="1.5" fill="currentColor"></circle>
+                  </svg>
+                  <span class="btn-text" id="roll-btn-text">Roll Random Anime</span>
+                  <span class="key-shortcut-hint" title="You can also press Spacebar to roll">SPACE</span>
+                </div>
+              </button>
+
+              <button type="button" class="btn-surprise" id="surprise-me-btn"
+                title="Reset filters to broad all-time best and roll immediately">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+                  </path>
+                </svg>
+                <span>Surprise Me</span>
+              </button>
+            </div>
+
+            <!-- Live matching count badge -->
+            <div class="catalog-status" id="catalog-status">
+              <span class="pool-icon">🔍</span>
+              <span id="catalog-status-text">Ready to roll from thousands of AniList titles</span>
+            </div>
+          </div>
+
+          <!-- Loading / Slot-Machine Ticker Overlay -->
+          <div class="slot-ticker-card hidden" id="slot-ticker">
+            <div class="ticker-backdrop-blur"></div>
+            <div class="ticker-content">
+              <div class="ticker-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-core">🎲</div>
+              </div>
+              <div class="ticker-label">Consulting AniList catalog...</div>
+              <div class="ticker-preview-title" id="ticker-preview-title">Searching anime...</div>
+            </div>
+          </div>
+
+          <!-- Empty / Welcome State -->
+          <div class="empty-state-card" id="empty-state-view">
+            <div class="empty-art">
+              <div class="radar-circle circle-1"></div>
+              <div class="radar-circle circle-2"></div>
+              <div class="radar-circle circle-3"></div>
+              <div class="empty-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path
+                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                  </path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+              </div>
+            </div>
+            <h1 class="empty-title">Ready to Find Your Next Anime Obsession?</h1>
+            <p class="empty-subtitle">
+              Pick your favorite genres on the left, adjust your preferences, and smash the <strong>Roll Random
+                Anime</strong> button or hit <kbd>Space</kbd>!
+            </p>
+            <div class="empty-perks">
+              <div class="perk-tag">✓ 19 Official AniList Genres</div>
+              <div class="perk-tag">✓ Trailers & Synopses</div>
+              <div class="perk-tag">✓ Watchlist & Roll History</div>
+              <div class="perk-tag">✓ Zero Duplicate Re-rolls</div>
+            </div>
+          </div>
+
+          <!-- Anime Winner Card (Dynamic Reveal) -->
+          <article class="anime-card hidden" id="anime-card" aria-label="Selected Anime Details">
+
+            <!-- Banner Backdrop with Color Flare -->
+            <div class="card-banner-wrap">
+              <img class="card-banner-img" id="card-banner-img" src="" alt="" loading="lazy">
+              <div class="banner-gradient-mask"></div>
+              <div class="banner-color-tint" id="banner-color-tint"></div>
+            </div>
+
+            <div class="card-body">
+
+              <!-- Left Column: Poster Cover & Key Stats -->
+              <div class="poster-column">
+                <div class="poster-wrapper" id="poster-3d-wrap">
+                  <img class="poster-img" id="poster-img" src="" alt="Anime Cover" loading="eager">
+
+                  <!-- Format Pill on Poster -->
+                  <div class="poster-badge-format" id="poster-format-badge">TV</div>
+
+                  <!-- Score Ring / Badge -->
+                  <div class="poster-score-badge" id="poster-score-badge" title="AniList Average Score">
+                    <svg class="score-ring-svg" viewBox="0 0 36 36">
+                      <path class="ring-bg"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      <path class="ring-fill" id="score-ring-fill" stroke-dasharray="0, 100"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <div class="score-text-val" id="score-val">--%</div>
+                  </div>
+                </div>
+
+                <!-- Watchlist / Favorite Button -->
+                <button type="button" class="btn-save-watchlist" id="toggle-watchlist-btn">
+                  <svg class="icon-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <span id="watchlist-btn-text">Add to Watchlist</span>
+                </button>
+              </div>
+
+              <!-- Right Column: Anime Details & Metadata -->
+              <div class="details-column">
+
+                <!-- Quick Meta Pills -->
+                <div class="meta-pills-row" id="meta-pills-row">
+                  <span class="meta-pill" id="meta-year">2023</span>
+                  <span class="meta-pill" id="meta-episodes">24 Episodes</span>
+                  <span class="meta-pill" id="meta-status">Finished</span>
+                  <span class="meta-pill studio-pill" id="meta-studio">MAPPA</span>
+                </div>
+
+                <!-- Primary Titles -->
+                <div class="title-block">
+                  <h2 class="anime-title-english" id="anime-title-en">Jujutsu Kaisen</h2>
+                  <div class="anime-title-romaji" id="anime-title-romaji">Jujutsu Kaisen</div>
+                  <div class="anime-title-native" id="anime-title-native">呪術廻戦</div>
+                </div>
+
+                <!-- Genre Badges (Click to Filter) -->
+                <div class="card-genres-wrap" id="card-genres-list">
+                  <!-- Dynamic Genre Tags -->
+                </div>
+
+                <!-- Synopsis / Description -->
+                <div class="synopsis-box">
+                  <div class="synopsis-text collapsed" id="anime-synopsis">
+                    Loading synopsis...
+                  </div>
+                  <button type="button" class="btn-expand-synopsis hidden" id="expand-synopsis-btn">
+                    Read More
+                  </button>
+                </div>
+
+                <!-- Next Airing Episode Banner (if active) -->
+                <div class="airing-alert hidden" id="airing-alert">
+                  <span class="airing-pulse"></span>
+                  <span id="airing-alert-text">Next Episode: Episode 5 airing in 2 days</span>
+                </div>
+
+                <!-- Interactive Card Action Bar -->
+                <div class="card-actions-bar">
+                  <!-- Trailer Button (if available) -->
+                  <button type="button" class="btn-action-primary" id="watch-trailer-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>Watch Trailer</span>
+                  </button>
+
+                  <!-- AniList External Link -->
+                  <a href="#" target="_blank" rel="noopener noreferrer" class="btn-action-secondary"
+                    id="anilist-link-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span>AniList Page</span>
+                  </a>
+
+                  <!-- Copy Details / Share -->
+                  <button type="button" class="btn-action-ghost" id="copy-share-btn"
+                    title="Copy title & link to clipboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Share</span>
+                  </button>
+
+                  <!-- Similar Roll Button -->
+                  <button type="button" class="btn-action-ghost" id="roll-similar-btn"
+                    title="Roll another anime matching this anime's genres">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="23 4 23 10 17 10"></polyline>
+                      <polyline points="1 20 1 14 7 14"></polyline>
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    <span>Similar Anime</span>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </article>
+
+          <!-- Error / No Results Notice -->
+          <div class="error-notice-card hidden" id="error-notice">
+            <div class="error-icon-box">⚠️</div>
+            <div class="error-text-wrap">
+              <h3 class="error-heading" id="error-heading">No Anime Found</h3>
+              <p class="error-detail" id="error-detail">Try loosening some genre filters or lowering the minimum score.
+              </p>
+            </div>
+            <button type="button" class="btn-action-secondary" id="error-reset-btn">Relax Filters</button>
+          </div>
+
+          <!-- Recently Rolled Horizontal Reel -->
+          <section class="recent-reel-section hidden" id="recent-reel-section" aria-label="Recently rolled anime">
+            <div class="recent-reel-header">
+              <div class="reel-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+                <span>Recent Rolls This Session</span>
+              </div>
+              <span class="reel-hint">Click any poster to re-view</span>
+            </div>
+            <div class="recent-strip-scroller" id="recent-strip">
+              <!-- Dynamically populated recent roll thumbnails -->
+            </div>
+          </section>
+
+        </section>
+      </div>
+
+    </main>
+
+    <!-- Trailer Modal -->
+    <div class="modal-overlay hidden" id="trailer-modal" role="dialog" aria-modal="true"
+      aria-labelledby="trailer-modal-title">
+      <div class="modal-dialog trailer-dialog">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="trailer-header-icon">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <h3 class="modal-title" id="trailer-modal-title">Anime Trailer</h3>
+          </div>
+          <div class="trailer-header-actions">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="mini-btn trailer-external-link"
+              id="trailer-yt-direct-btn">
+              Watch on YouTube ↗
+            </a>
+            <button type="button" class="modal-close-btn" id="close-trailer-btn" aria-label="Close Trailer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="modal-body trailer-body">
+          <div class="video-container" id="video-container">
+            <!-- Iframe injected via JS -->
+          </div>
+          <div class="trailer-footer-notice" id="trailer-footer-notice">
+            <div class="notice-info">
+              <span class="notice-icon">💡</span>
+              <span>If playback is restricted by the anime studio or shows <em>"Unavailable"</em>, you can watch it
+                directly:</span>
+            </div>
+            <div class="trailer-fallback-actions">
+              <a href="#" target="_blank" rel="noopener noreferrer" class="mini-btn highlight-btn"
+                id="trailer-fallback-yt-btn">
+                Open Official Trailer on YouTube ↗
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" class="mini-btn" id="trailer-fallback-search-btn">
+                Search Other Trailers on YouTube 🔍
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Watchlist Modal / Drawer -->
+    <div class="modal-overlay hidden" id="watchlist-modal" role="dialog" aria-modal="true"
+      aria-labelledby="watchlist-modal-title">
+      <div class="modal-dialog watchlist-dialog">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <h3 class="modal-title" id="watchlist-modal-title">My Saved Watchlist</h3>
+            <span class="count-badge" id="modal-watchlist-count">0</span>
+          </div>
+          <button type="button" class="modal-close-btn" id="close-watchlist-btn" aria-label="Close Watchlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="watchlist-actions-top">
+            <input type="text" id="watchlist-search-input" placeholder="Search saved anime..." class="styled-input">
+            <button type="button" class="mini-btn danger-btn" id="clear-watchlist-btn">Clear All</button>
+          </div>
+          <div class="watchlist-items-list" id="watchlist-items-list">
+            <!-- Dynamic Watchlist Items -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal-overlay hidden" id="history-modal" role="dialog" aria-modal="true"
+      aria-labelledby="history-modal-title">
+      <div class="modal-dialog history-dialog">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <h3 class="modal-title" id="history-modal-title">Roll History</h3>
+            <span class="count-badge" id="modal-history-count">0</span>
+          </div>
+          <button type="button" class="modal-close-btn" id="close-history-btn" aria-label="Close History">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="watchlist-actions-top">
+            <span class="subtext">All anime rolled during this session</span>
+            <button type="button" class="mini-btn danger-btn" id="clear-history-btn">Clear History</button>
+          </div>
+          <div class="history-items-list" id="history-items-list">
+            <!-- Dynamic History Items -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p>Built by hairi034 using the official <a href="https://anilist.co" target="_blank"
+            rel="noopener noreferrer">AniList GraphQL API</a>. Data and media belong to their respective creators.</p>
+        <div class="footer-links">
+          <span>Keyboard: <kbd>Space</kbd> to roll • <kbd>Esc</kbd> to close modals</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

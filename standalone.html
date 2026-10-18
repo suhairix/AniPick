@@ -1,0 +1,4791 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AniPick - Discover your next favorite anime with an intelligent, highly customizable anime randomizer powered by the AniList GraphQL API. Filter by genres, ratings, eras, and formats.">
+  <meta name="theme-color" content="#0b0d17">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>AniPick â€” Intelligent Anime Randomizer & Discovery Engine</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+/* ==========================================================================
+   ANIPICK - MODERN DESIGN SYSTEM & STYLES
+   ========================================================================== */
+
+:root {
+  /* Color Palette */
+  --bg-darkest: #07080f;
+  --bg-primary: #0c0e1a;
+  --bg-card: rgba(18, 22, 39, 0.75);
+  --bg-card-hover: rgba(26, 32, 56, 0.85);
+  --bg-surface: #141829;
+  --bg-surface-elevated: #1d223a;
+  --bg-glass: rgba(255, 255, 255, 0.04);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(139, 92, 246, 0.6);
+  --border-glass: rgba(255, 255, 255, 0.12);
+
+  /* Primary Brand Gradients & Accents */
+  --primary-indigo: #6366f1;
+  --primary-purple: #8b5cf6;
+  --primary-pink: #ec4899;
+  --accent-cyan: #06b6d4;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+
+  --grad-primary: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  --grad-cyan-blue: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --grad-sunset: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  --grad-surface: linear-gradient(180deg, rgba(26, 32, 56, 0.6) 0%, rgba(14, 17, 30, 0.8) 100%);
+  --glow-primary: 0 0 35px -5px rgba(139, 92, 246, 0.45);
+  --glow-pink: 0 0 30px -5px rgba(236, 72, 153, 0.4);
+
+  /* Typography */
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-japanese: 'Noto Sans JP', sans-serif;
+
+  /* Text Colors */
+  --text-main: #f8fafc;
+  --text-sub: #94a3b8;
+  --text-muted: #64748b;
+  --text-dim: #475569;
+
+  /* Radii & Shadows */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  --shadow-lg: 0 20px 30px -10px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 15px 35px rgba(0, 0, 0, 0.4);
+
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   Base & Reset
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-darkest);
+  color: var(--text-main);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ambient Background Light Orbs */
+.ambient-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(140px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  transition: transform 12s ease-in-out;
+}
+
+.glow-1 {
+  top: -15%;
+  left: 10%;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.55), transparent 70%);
+  animation: floatOrb1 20s infinite alternate ease-in-out;
+}
+
+.glow-2 {
+  top: 35%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.4), transparent 70%);
+  animation: floatOrb2 25s infinite alternate ease-in-out;
+}
+
+.glow-3 {
+  bottom: -10%;
+  left: 25%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.35), transparent 70%);
+}
+
+@keyframes floatOrb1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(60px, 80px) scale(1.1); }
+}
+
+@keyframes floatOrb2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-80px, -50px) scale(1.15); }
+}
+
+/* App Shell */
+.app-layout {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   Header Navigation
+   ========================================================================== */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: rgba(18, 22, 39, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-icon-wrap {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--grad-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--glow-primary);
+  flex-shrink: 0;
+  transition: transform var(--transition-bounce);
+}
+
+.brand-logo:hover .logo-icon-wrap {
+  transform: rotate(15deg) scale(1.08);
+}
+
+.dice-icon {
+  width: 24px;
+  height: 24px;
+  color: #fff;
+}
+
+.sparkle-dot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 10px #38bdf8;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 60%, #cbd5e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.brand-dot {
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-tagline {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-sub);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* API Status Pill */
+.api-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #34d399;
+}
+
+.status-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseBeacon 2s infinite ease-in-out;
+}
+
+@keyframes pulseBeacon {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-icon-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-sub);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.nav-icon-btn:hover {
+  background: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border-color: var(--border-glass);
+  transform: translateY(-1px);
+}
+
+.nav-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 0.5rem 0.95rem;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.nav-action-btn:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-glass);
+  transform: translateY(-1px);
+}
+
+.nav-action-btn svg {
+  width: 17px;
+  height: 17px;
+  color: var(--text-sub);
+}
+
+.count-badge {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+}
+
+.count-badge.primary-badge {
+  background: var(--grad-primary);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+/* ==========================================================================
+   Quick Presets Strip
+   ========================================================================== */
+
+.presets-section {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.presets-section::-webkit-scrollbar {
+  display: none;
+}
+
+.presets-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.spark-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-amber);
+}
+
+.presets-scroll {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding: 2px;
+}
+
+.preset-chip {
+  background: rgba(26, 32, 56, 0.6);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-sub);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all var(--transition-fast);
+}
+
+.preset-chip:hover {
+  background: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border-color: var(--border-glass);
+  transform: translateY(-2px);
+}
+
+.preset-chip.active {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(236, 72, 153, 0.25));
+  border-color: rgba(139, 92, 246, 0.6);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.25);
+}
+
+.preset-emoji {
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Main Grid Layout
+   ========================================================================== */
+
+.app-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+/* ==========================================================================
+   Left Filter Deck
+   ========================================================================== */
+
+.control-panel-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 1.5rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.control-panel-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.control-panel-card::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.85rem;
+}
+
+.panel-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.panel-title-wrap svg {
+  width: 18px;
+  height: 18px;
+  color: var(--primary-purple);
+}
+
+.panel-title-wrap h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.text-link-btn {
+  background: none;
+  border: none;
+  color: var(--text-sub);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast);
+}
+
+.text-link-btn:hover {
+  color: var(--accent-rose);
+}
+
+/* Filter Group */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.filter-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-hint {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent-cyan);
+}
+
+/* Mode Switcher (Any vs All) */
+.genre-mode-toggle {
+  display: flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 2px;
+}
+
+.genre-mode-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.genre-mode-btn.active {
+  background: var(--primary-purple);
+  color: #fff;
+}
+
+/* Genre Pills Grid */
+.genre-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.genre-chip-grid::-webkit-scrollbar {
+  width: 5px;
+}
+
+.genre-chip-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.genre-badge {
+  background: rgba(26, 32, 56, 0.7);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-sub);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  user-select: none;
+  transition: all var(--transition-fast);
+}
+
+.genre-badge:hover {
+  background: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border-color: var(--border-glass);
+}
+
+/* Selected / Included State */
+.genre-badge.included {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(236, 72, 153, 0.35));
+  border-color: var(--primary-purple);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+}
+
+.genre-badge.included .badge-symbol {
+  color: #34d399;
+}
+
+/* Excluded State (Shift Click / Right Click) */
+.genre-badge.excluded {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: rgba(244, 63, 94, 0.6);
+  color: #fda4af;
+  text-decoration: line-through;
+}
+
+.genre-badge.excluded .badge-symbol {
+  color: #f43f5e;
+}
+
+.genre-quick-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.mini-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-sub);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mini-btn:hover {
+  background: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border-color: var(--border-glass);
+}
+
+.mini-btn.danger-btn:hover {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fda4af;
+  border-color: rgba(244, 63, 94, 0.4);
+}
+
+.action-tip {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  width: 100%;
+}
+
+/* Custom Tags & User Preferences */
+.custom-tags-group {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1rem;
+}
+
+.custom-tag-form {
+  width: 100%;
+}
+
+.input-with-button {
+  display: flex;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.custom-input {
+  flex: 1;
+  background: var(--bg-surface);
+  font-size: 0.8rem;
+  padding: 0.45rem 0.75rem;
+}
+
+.add-accent-btn {
+  background: var(--grad-primary);
+  border: none;
+  color: #fff;
+  padding: 0.45rem 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.35);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.add-accent-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5);
+}
+
+.popular-suggestions-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+
+.suggestions-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.suggestions-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.suggestion-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed var(--border-subtle);
+  color: var(--text-sub);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.suggestion-chip:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--primary-purple);
+  color: #fff;
+  border-style: solid;
+  transform: translateY(-1px);
+}
+
+.custom-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.custom-tag-badge {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: #67e8f9;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  user-select: none;
+  transition: all var(--transition-fast);
+}
+
+.custom-tag-badge:hover {
+  background: rgba(6, 182, 212, 0.2);
+  border-color: var(--accent-cyan);
+}
+
+.custom-tag-badge.included {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(59, 130, 246, 0.3));
+  border-color: var(--accent-cyan);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+.custom-tag-badge.excluded {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: rgba(244, 63, 94, 0.6);
+  color: #fda4af;
+  text-decoration: line-through;
+}
+
+.btn-remove-tag {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.7;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 0 0 0 2px;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.btn-remove-tag:hover {
+  opacity: 1;
+  color: #f43f5e;
+}
+
+/* Accordion */
+.filter-accordion {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1rem;
+}
+
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.35rem 0;
+}
+
+.accordion-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.accordion-title svg {
+  width: 17px;
+  height: 17px;
+  color: var(--accent-cyan);
+}
+
+.chevron-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  transition: transform var(--transition-normal);
+}
+
+.accordion-trigger.collapsed .chevron-icon {
+  transform: rotate(-90deg);
+}
+
+.accordion-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  margin-top: 1.15rem;
+  transition: all var(--transition-normal);
+}
+
+.accordion-content.hidden {
+  display: none;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.filter-sublabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+
+/* Form Elements */
+.styled-select {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-sm);
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.styled-select:focus {
+  border-color: var(--border-focus);
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slider-value {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+}
+
+.styled-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-surface);
+  outline: none;
+  cursor: pointer;
+}
+
+.styled-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--grad-primary);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.styled-range::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.range-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  padding: 0 2px;
+}
+
+/* Toggle Switch */
+.filter-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(26, 32, 56, 0.4);
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 34px;
+  transition: var(--transition-fast);
+}
+
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: var(--transition-fast);
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--primary-purple);
+  border-color: var(--primary-purple);
+}
+
+input:checked + .toggle-slider::before {
+  transform: translateX(16px);
+}
+
+.toggle-label-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.toggle-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Randomizer Arena (Right Side)
+   ========================================================================== */
+
+.randomizer-arena {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Command Deck / Roll Action */
+.roll-command-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+.roll-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-roll-master {
+  position: relative;
+  flex: 1;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+}
+
+.btn-glow-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  background: var(--grad-primary);
+  filter: blur(14px);
+  opacity: 0.65;
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+  z-index: 0;
+}
+
+.btn-roll-master:hover .btn-glow-layer {
+  opacity: 0.95;
+  transform: scale(1.02);
+}
+
+.btn-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  background: var(--grad-primary);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 1.05rem 1.75rem;
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all var(--transition-fast);
+}
+
+.btn-roll-master:hover .btn-inner {
+  transform: translateY(-2px);
+}
+
+.btn-roll-master:active .btn-inner {
+  transform: translateY(1px);
+}
+
+.btn-roll-master:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.dice-spin-icon {
+  width: 26px;
+  height: 26px;
+  transition: transform var(--transition-bounce);
+}
+
+.btn-roll-master:hover .dice-spin-icon {
+  transform: rotate(45deg);
+}
+
+.key-shortcut-hint {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+  margin-left: 0.5rem;
+}
+
+.btn-surprise {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-amber);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 1.05rem 1.4rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.btn-surprise:hover {
+  background: var(--bg-surface-elevated);
+  border-color: rgba(245, 158, 11, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.btn-surprise svg {
+  width: 20px;
+  height: 20px;
+}
+
+.catalog-status {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--text-sub);
+}
+
+/* ==========================================================================
+   Welcome / Empty State
+   ========================================================================== */
+
+.empty-state-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 3.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+
+.empty-art {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  animation: radarPulse 3s infinite ease-out;
+}
+
+.circle-1 { width: 60px; height: 60px; animation-delay: 0s; }
+.circle-2 { width: 90px; height: 90px; animation-delay: 1s; }
+.circle-3 { width: 120px; height: 120px; animation-delay: 2s; }
+
+@keyframes radarPulse {
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.empty-icon-box {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  background: var(--grad-surface);
+  border: 1px solid var(--border-glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--glow-primary);
+  position: relative;
+  z-index: 2;
+}
+
+.empty-icon-box svg {
+  width: 32px;
+  height: 32px;
+  color: var(--primary-purple);
+}
+
+.empty-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  max-width: 500px;
+  line-height: 1.2;
+}
+
+.empty-subtitle {
+  color: var(--text-sub);
+  max-width: 480px;
+  font-size: 0.95rem;
+}
+
+.empty-subtitle kbd {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--text-main);
+}
+
+.empty-perks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.perk-tag {
+  background: rgba(26, 32, 56, 0.7);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+}
+
+/* ==========================================================================
+   Slot Machine / Loading Ticker Card
+   ========================================================================== */
+
+.slot-ticker-card {
+  position: relative;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.25);
+  overflow: hidden;
+}
+
+.ticker-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  z-index: 2;
+}
+
+.ticker-spinner {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--primary-pink);
+  border-right-color: var(--primary-purple);
+  animation: spinRing 0.8s infinite linear;
+}
+
+@keyframes spinRing {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-core {
+  font-size: 1.8rem;
+  animation: bounceDice 0.6s infinite alternate ease-in-out;
+}
+
+@keyframes bounceDice {
+  from { transform: scale(0.9) rotate(-10deg); }
+  to { transform: scale(1.1) rotate(10deg); }
+}
+
+.ticker-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ticker-preview-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fff;
+  max-width: 420px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Winner Anime Showcase Card
+   ========================================================================== */
+
+.anime-card {
+  position: relative;
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  animation: cardFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dynamic Banner Backdrop */
+.card-banner-wrap {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #0f1220;
+}
+
+.card-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  filter: brightness(0.75) contrast(1.1);
+  transition: transform 0.6s ease;
+}
+
+.banner-gradient-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(12, 14, 26, 0.1) 0%, rgba(12, 14, 26, 0.85) 75%, var(--bg-card) 100%);
+}
+
+.banner-color-tint {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: color;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Card Body */
+.card-body {
+  position: relative;
+  padding: 0 2rem 2rem 2rem;
+  margin-top: -100px;
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 2rem;
+  z-index: 2;
+}
+
+/* Left Poster Column */
+.poster-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.poster-wrapper {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.65);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  aspect-ratio: 2/3;
+  background: #14172a;
+  transition: transform var(--transition-bounce), box-shadow var(--transition-normal);
+}
+
+.poster-wrapper:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(139, 92, 246, 0.35);
+}
+
+.poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.poster-badge-format {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+}
+
+/* Score Radial Badge */
+.poster-score-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 48px;
+  height: 48px;
+  background: rgba(11, 14, 26, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.score-ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 3.2;
+}
+
+.ring-fill {
+  fill: none;
+  stroke: #10b981;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.8s ease-out, stroke 0.4s ease;
+}
+
+.score-text-val {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #fff;
+  z-index: 1;
+}
+
+/* Watchlist Bookmark Button */
+.btn-save-watchlist {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-save-watchlist:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-glass);
+}
+
+.btn-save-watchlist.saved {
+  background: rgba(236, 72, 153, 0.15);
+  border-color: rgba(236, 72, 153, 0.5);
+  color: #f472b6;
+}
+
+.btn-save-watchlist.saved .icon-bookmark {
+  fill: currentColor;
+}
+
+.icon-bookmark {
+  width: 16px;
+  height: 16px;
+}
+
+/* Right Details Column */
+.details-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  padding-top: 1rem;
+}
+
+.meta-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.meta-pill {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+}
+
+.meta-pill.studio-pill {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: #67e8f9;
+}
+
+/* Titles */
+.title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.anime-title-english {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.anime-title-romaji {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+
+.anime-title-native {
+  font-family: var(--font-japanese);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Genres Wrap */
+.card-genres-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.card-genre-pill {
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  color: #c4b5fd;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.card-genre-pill:hover {
+  background: rgba(139, 92, 246, 0.25);
+  border-color: var(--primary-purple);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Synopsis */
+.synopsis-box {
+  background: rgba(15, 18, 33, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+}
+
+.synopsis-text {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #cbd5e1;
+}
+
+.synopsis-text.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.btn-expand-synopsis {
+  background: none;
+  border: none;
+  color: var(--accent-cyan);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.35rem 0 0 0;
+  transition: color var(--transition-fast);
+}
+
+.btn-expand-synopsis:hover {
+  color: #38bdf8;
+  text-decoration: underline;
+}
+
+/* Airing Alert */
+.airing-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #34d399;
+}
+
+.airing-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseBeacon 2s infinite ease-in-out;
+}
+
+/* Card Action Bar */
+.card-actions-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.btn-action-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--grad-sunset);
+  border: none;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35);
+  transition: all var(--transition-fast);
+}
+
+.btn-action-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+}
+
+.btn-action-primary svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-action-secondary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-action-secondary:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-glass);
+  transform: translateY(-2px);
+}
+
+.btn-action-secondary svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-sub);
+}
+
+.btn-action-ghost {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-sub);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.65rem 0.95rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-action-ghost:hover {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border-color: var(--border-glass);
+}
+
+.btn-action-ghost svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ==========================================================================
+   Error / Empty Notice Card
+   ========================================================================== */
+
+.error-notice-card {
+  background: rgba(244, 63, 94, 0.08);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.error-icon-box {
+  font-size: 2rem;
+}
+
+.error-text-wrap {
+  flex: 1;
+}
+
+.error-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fda4af;
+  margin-bottom: 0.25rem;
+}
+
+.error-detail {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+}
+
+/* ==========================================================================
+   Recently Rolled Reel
+   ========================================================================== */
+
+.recent-reel-section {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.recent-reel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.reel-title svg {
+  width: 17px;
+  height: 17px;
+  color: var(--primary-purple);
+}
+
+.reel-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.recent-strip-scroller {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  overflow-x: auto;
+  padding: 0.35rem 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.recent-strip-scroller::-webkit-scrollbar {
+  height: 6px;
+}
+
+.recent-strip-scroller::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+
+.recent-thumb-card {
+  position: relative;
+  width: 90px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.recent-thumb-card:hover {
+  transform: translateY(-4px) scale(1.05);
+  border-color: var(--primary-purple);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.recent-thumb-img {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  display: block;
+}
+
+.recent-thumb-score {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.8);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #34d399;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.recent-thumb-title {
+  padding: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   Modals (Trailer, Watchlist, History)
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 8, 15, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-dialog {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+
+.modal-dialog.trailer-dialog {
+  max-width: 860px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.modal-title-wrap svg {
+  width: 20px;
+  height: 20px;
+  color: var(--primary-pink);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.modal-close-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.trailer-body {
+  padding: 0;
+  background: #000;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.trailer-header-icon {
+  width: 20px;
+  height: 20px;
+  color: #ef4444;
+}
+
+.trailer-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.trailer-external-link {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  text-decoration: none;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.7rem;
+}
+
+.trailer-external-link:hover {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+}
+
+.trailer-footer-notice {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.notice-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  line-height: 1.4;
+}
+
+.notice-info em {
+  color: #fda4af;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.trailer-fallback-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.mini-btn.highlight-btn {
+  background: var(--grad-sunset);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.4rem 0.85rem;
+  text-decoration: none;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+}
+
+.mini-btn.highlight-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+}
+
+.watchlist-actions-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.styled-input {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  width: 100%;
+  outline: none;
+}
+
+.styled-input:focus {
+  border-color: var(--border-focus);
+}
+
+.watchlist-items-list, .history-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.watchlist-item, .history-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(26, 32, 56, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+  transition: background var(--transition-fast);
+}
+
+.watchlist-item:hover, .history-item:hover {
+  background: rgba(26, 32, 56, 0.8);
+}
+
+.watchlist-thumb, .history-thumb {
+  width: 48px;
+  height: 68px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.watchlist-details, .history-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.watchlist-title, .history-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.watchlist-meta, .history-meta {
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  margin-top: 0.2rem;
+}
+
+.watchlist-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ==========================================================================
+   Toast Notification System
+   ========================================================================== */
+
+.toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-glass);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  animation: toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+.toast.toast-success {
+  border-left: 4px solid var(--accent-emerald);
+}
+
+.toast.toast-info {
+  border-left: 4px solid var(--accent-cyan);
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.app-footer {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.footer-content a {
+  color: var(--primary-purple);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer-content a:hover {
+  text-decoration: underline;
+}
+
+.footer-links kbd {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--text-sub);
+}
+
+/* Utility Class */
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .control-panel-card {
+    position: static;
+    max-height: none;
+  }
+
+  .card-body {
+    grid-template-columns: 180px 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    padding: 1rem;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .header-left, .header-right {
+    justify-content: space-between;
+  }
+
+  .card-body {
+    grid-template-columns: 1fr;
+    padding: 0 1.25rem 1.5rem 1.25rem;
+    margin-top: -60px;
+  }
+
+  .poster-column {
+    max-width: 220px;
+    margin: 0 auto;
+  }
+
+  .anime-title-english {
+    font-size: 1.45rem;
+  }
+
+  .roll-cta-group {
+    flex-direction: column;
+  }
+
+  .btn-surprise {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+</style>
+</head>
+<body>
+  <!-- Ambient background decorative glows -->
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+  <div class="ambient-glow glow-3" aria-hidden="true"></div>
+
+  <!-- Main App Shell -->
+  <div class="app-layout">
+    
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+      <div class="header-left">
+        <a href="#" class="brand-logo" id="logo-link" aria-label="AniPick Home">
+          <div class="logo-icon-wrap">
+            <svg class="dice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <circle cx="8" cy="8" r="1.5" fill="currentColor"></circle>
+              <circle cx="16" cy="8" r="1.5" fill="currentColor"></circle>
+              <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+              <circle cx="8" cy="16" r="1.5" fill="currentColor"></circle>
+              <circle cx="16" cy="16" r="1.5" fill="currentColor"></circle>
+            </svg>
+            <span class="sparkle-dot"></span>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">AniPick<span class="brand-dot">.</span></div>
+            <span class="brand-tagline">Powered by AniList GraphQL</span>
+          </div>
+        </a>
+
+        <div class="api-status-pill" id="api-status-pill" title="Live AniList GraphQL API Connection">
+          <span class="status-indicator"></span>
+          <span class="status-text" id="status-text">AniList Online</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- SFX Mute/Unmute Toggle -->
+        <button class="nav-icon-btn" id="sfx-toggle-btn" title="Toggle Sound Effects" aria-label="Toggle Sound Effects">
+          <svg class="sfx-on-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg class="sfx-off-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+
+        <!-- History Button -->
+        <button class="nav-action-btn" id="history-modal-btn" aria-label="View Roll History">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>History</span>
+          <span class="count-badge" id="history-count">0</span>
+        </button>
+
+        <!-- Watchlist Button -->
+        <button class="nav-action-btn" id="watchlist-modal-btn" aria-label="View Saved Watchlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>Watchlist</span>
+          <span class="count-badge primary-badge" id="watchlist-count">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Quick Curated Presets Bar -->
+      <section class="presets-section" aria-label="Genre Presets">
+        <div class="presets-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spark-icon">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          <span>Quick Presets:</span>
+        </div>
+        <div class="presets-scroll" id="presets-list">
+          <button type="button" class="preset-chip active" data-preset="all">
+            <span class="preset-emoji">âœ¨</span> Any Genre
+          </button>
+          <button type="button" class="preset-chip" data-preset="shonen">
+            <span class="preset-emoji">âš”ï¸</span> Shonen Hype
+          </button>
+          <button type="button" class="preset-chip" data-preset="romance">
+            <span class="preset-emoji">ðŸŒ¸</span> Sweet Romance
+          </button>
+          <button type="button" class="preset-chip" data-preset="psychological">
+            <span class="preset-emoji">ðŸ§ </span> Mind Games & Thriller
+          </button>
+          <button type="button" class="preset-chip" data-preset="cozy">
+            <span class="preset-emoji">â˜•</span> Cozy Slice of Life
+          </button>
+          <button type="button" class="preset-chip" data-preset="cyberpunk">
+            <span class="preset-emoji">ðŸš€</span> Sci-Fi & Mecha
+          </button>
+          <button type="button" class="preset-chip" data-preset="fantasy">
+            <span class="preset-emoji">ðŸ”®</span> Magic & Fantasy
+          </button>
+          <button type="button" class="preset-chip" data-preset="comedy">
+            <span class="preset-emoji">ðŸ˜‚</span> Pure Comedy
+          </button>
+          <button type="button" class="preset-chip" data-preset="music">
+            <span class="preset-emoji">ðŸŽµ</span> Music & Bands
+          </button>
+          <button type="button" class="preset-chip" data-preset="isekai">
+            <span class="preset-emoji">ðŸŒ€</span> Isekai & Fantasy
+          </button>
+        </div>
+      </section>
+
+      <!-- Primary Grid: Filter Deck (Left/Top) + Hero Showcase (Right/Center) -->
+      <div class="app-grid">
+        
+        <!-- Controls & Genre Deck -->
+        <aside class="control-panel-card" id="filter-deck">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
+              <h2>Filter & Customize</h2>
+            </div>
+            <button type="button" class="text-link-btn" id="reset-filters-btn" title="Reset all filters to default">
+              Reset All
+            </button>
+          </div>
+
+          <!-- Genre Matrix Section -->
+          <div class="filter-group">
+            <div class="filter-group-header">
+              <label class="filter-label">
+                Genres
+                <span class="filter-hint" id="genre-hint-count">0 selected</span>
+              </label>
+              <div class="genre-mode-toggle" title="Switch between matching ANY or ALL selected genres">
+                <button type="button" class="genre-mode-btn active" id="mode-any-btn" data-mode="ANY">Any (OR)</button>
+                <button type="button" class="genre-mode-btn" id="mode-all-btn" data-mode="ALL">All (AND)</button>
+              </div>
+            </div>
+
+            <!-- Genre Selection Grid -->
+            <div class="genre-chip-grid" id="genre-chip-grid">
+              <!-- Dynamically populated or filled with fallback genres -->
+            </div>
+
+            <div class="genre-quick-actions">
+              <button type="button" class="mini-btn" id="select-all-genres-btn">Select All</button>
+              <button type="button" class="mini-btn" id="clear-all-genres-btn">Clear Genres</button>
+              <span class="action-tip">ðŸ’¡ Shift-click or right-click to exclude</span>
+            </div>
+          </div>
+
+          <!-- Custom Preferences & Subgenres Section -->
+          <div class="filter-group custom-tags-group">
+            <div class="filter-group-header">
+              <label class="filter-label">
+                Custom Tags & Themes
+                <span class="filter-hint" id="custom-tags-hint">Add your own</span>
+              </label>
+            </div>
+
+            <!-- Add Custom Tag Input Form -->
+            <form id="add-custom-tag-form" class="custom-tag-form" onsubmit="return false;">
+              <div class="input-with-button">
+                <input 
+                  type="text" 
+                  id="custom-genre-input" 
+                  list="anilist-tags-datalist" 
+                  placeholder="e.g. Band, Idol, Isekai, Cyberpunk..." 
+                  class="styled-input custom-input" 
+                  autocomplete="off"
+                >
+                <button type="submit" id="add-custom-tag-btn" class="mini-btn add-accent-btn" title="Add this custom preference">
+                  + Add
+                </button>
+              </div>
+              <datalist id="anilist-tags-datalist">
+                <!-- Dynamically populated from AniList 420+ MediaTagCollection -->
+              </datalist>
+            </form>
+
+            <!-- Popular Tag Suggestions Quick-Add -->
+            <div class="popular-suggestions-wrap">
+              <span class="suggestions-label">Popular tags:</span>
+              <div class="suggestions-chips" id="popular-suggestions-list">
+                <button type="button" class="suggestion-chip" data-tag="Band">ðŸŽ¸ Band</button>
+                <button type="button" class="suggestion-chip" data-tag="Idol">ðŸŽ¤ Idol</button>
+                <button type="button" class="suggestion-chip" data-tag="Isekai">ðŸŒ€ Isekai</button>
+                <button type="button" class="suggestion-chip" data-tag="School">ðŸ« School</button>
+                <button type="button" class="suggestion-chip" data-tag="Cyberpunk">ðŸ¤– Cyberpunk</button>
+                <button type="button" class="suggestion-chip" data-tag="Time Travel">â³ Time Travel</button>
+                <button type="button" class="suggestion-chip" data-tag="Super Power">âš¡ Super Power</button>
+                <button type="button" class="suggestion-chip" data-tag="Martial Arts">ðŸ¥‹ Martial Arts</button>
+              </div>
+            </div>
+
+            <!-- Custom User-Added Tags Grid -->
+            <div class="custom-chip-grid" id="custom-chip-grid">
+              <!-- Dynamically populated from STATE.customTags -->
+            </div>
+          </div>
+
+          <!-- Advanced Filters Collapsible / Settings -->
+          <div class="filter-accordion">
+            <button type="button" class="accordion-trigger" id="adv-filter-toggle" aria-expanded="true">
+              <div class="accordion-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>Format, Rating & Era</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            <div class="accordion-content" id="adv-filter-content">
+              <!-- Discovery Strategy / Mode -->
+              <div class="filter-item">
+                <label for="filter-mode" class="filter-sublabel">Discovery Pool</label>
+                <select id="filter-mode" class="styled-select">
+                  <option value="POPULARITY_DESC">ðŸŒŸ Popular All-Stars (Top 200)</option>
+                  <option value="SCORE_DESC">ðŸ† Highest Rated (Critically Acclaimed)</option>
+                  <option value="HIDDEN_GEMS">ðŸ’Ž Hidden Gems (High Score, Lower Hype)</option>
+                  <option value="WILDCARD" selected>ðŸŽ² Deep Cut Wildcard (Broad Discovery)</option>
+                  <option value="TRENDING_DESC">âš¡ Currently Trending</option>
+                </select>
+              </div>
+
+              <!-- Media Format -->
+              <div class="filter-item">
+                <label for="filter-format" class="filter-sublabel">Format</label>
+                <select id="filter-format" class="styled-select">
+                  <option value="ANY">Any Format</option>
+                  <option value="TV">TV Series</option>
+                  <option value="MOVIE">Anime Movie</option>
+                  <option value="OVA_ONA">OVA / ONA Series</option>
+                  <option value="SPECIAL">Special</option>
+                </select>
+              </div>
+
+              <!-- Minimum Rating / Score Slider -->
+              <div class="filter-item">
+                <div class="slider-header">
+                  <label for="filter-score" class="filter-sublabel">Min Score</label>
+                  <span class="slider-value" id="score-display">Any Score</span>
+                </div>
+                <input type="range" id="filter-score" min="0" max="85" step="5" value="0" class="styled-range">
+                <div class="range-ticks">
+                  <span>Any</span>
+                  <span>60%</span>
+                  <span>70%</span>
+                  <span>80%</span>
+                  <span>85%+</span>
+                </div>
+              </div>
+
+              <!-- Release Era / Decade -->
+              <div class="filter-item">
+                <label for="filter-era" class="filter-sublabel">Release Era</label>
+                <select id="filter-era" class="styled-select">
+                  <option value="ANY">Any Year</option>
+                  <option value="2020">Modern (2020 - Present)</option>
+                  <option value="2010">2010s Golden Wave</option>
+                  <option value="2000">2000s Classic Era</option>
+                  <option value="1990">90s & Retro (Pre-2000)</option>
+                </select>
+              </div>
+
+              <!-- Airing Status -->
+              <div class="filter-item">
+                <label for="filter-status" class="filter-sublabel">Airing Status</label>
+                <select id="filter-status" class="styled-select">
+                  <option value="ANY">Any Status</option>
+                  <option value="FINISHED">Finished Airing</option>
+                  <option value="RELEASING">Currently Airing</option>
+                </select>
+              </div>
+
+              <!-- SFW Toggle -->
+              <div class="filter-checkbox-item">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="sfw-only-checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+                <div class="toggle-label-wrap">
+                  <span class="toggle-title">Safe For Work (SFW)</span>
+                  <span class="toggle-desc">Exclude adult/18+ media</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Randomizer Showcase Arena -->
+        <section class="randomizer-arena" aria-live="polite">
+          
+          <!-- Master Roll Command Deck -->
+          <div class="roll-command-deck">
+            <div class="roll-cta-group">
+              <button type="button" class="btn-roll-master" id="roll-anime-btn" aria-label="Randomize and roll anime">
+                <div class="btn-glow-layer"></div>
+                <div class="btn-inner">
+                  <svg class="dice-spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <circle cx="8" cy="8" r="1.5" fill="currentColor"></circle>
+                    <circle cx="16" cy="8" r="1.5" fill="currentColor"></circle>
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+                    <circle cx="8" cy="16" r="1.5" fill="currentColor"></circle>
+                    <circle cx="16" cy="16" r="1.5" fill="currentColor"></circle>
+                  </svg>
+                  <span class="btn-text" id="roll-btn-text">Roll Random Anime</span>
+                  <span class="key-shortcut-hint" title="You can also press Spacebar to roll">SPACE</span>
+                </div>
+              </button>
+
+              <button type="button" class="btn-surprise" id="surprise-me-btn" title="Reset filters to broad all-time best and roll immediately">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+                </svg>
+                <span>Surprise Me</span>
+              </button>
+            </div>
+
+            <!-- Live matching count badge -->
+            <div class="catalog-status" id="catalog-status">
+              <span class="pool-icon">ðŸ”</span>
+              <span id="catalog-status-text">Ready to roll from thousands of AniList titles</span>
+            </div>
+          </div>
+
+          <!-- Loading / Slot-Machine Ticker Overlay -->
+          <div class="slot-ticker-card hidden" id="slot-ticker">
+            <div class="ticker-backdrop-blur"></div>
+            <div class="ticker-content">
+              <div class="ticker-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-core">ðŸŽ²</div>
+              </div>
+              <div class="ticker-label">Consulting AniList catalog...</div>
+              <div class="ticker-preview-title" id="ticker-preview-title">Searching anime...</div>
+            </div>
+          </div>
+
+          <!-- Empty / Welcome State -->
+          <div class="empty-state-card" id="empty-state-view">
+            <div class="empty-art">
+              <div class="radar-circle circle-1"></div>
+              <div class="radar-circle circle-2"></div>
+              <div class="radar-circle circle-3"></div>
+              <div class="empty-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+              </div>
+            </div>
+            <h1 class="empty-title">Ready to Find Your Next Anime Obsession?</h1>
+            <p class="empty-subtitle">
+              Pick your favorite genres on the left, adjust your preferences, and smash the <strong>Roll Random Anime</strong> button or hit <kbd>Space</kbd>!
+            </p>
+            <div class="empty-perks">
+              <div class="perk-tag">âœ“ 19 Official AniList Genres</div>
+              <div class="perk-tag">âœ“ Trailers & Synopses</div>
+              <div class="perk-tag">âœ“ Watchlist & Roll History</div>
+              <div class="perk-tag">âœ“ Zero Duplicate Re-rolls</div>
+            </div>
+          </div>
+
+          <!-- Anime Winner Card (Dynamic Reveal) -->
+          <article class="anime-card hidden" id="anime-card" aria-label="Selected Anime Details">
+            
+            <!-- Banner Backdrop with Color Flare -->
+            <div class="card-banner-wrap">
+              <img class="card-banner-img" id="card-banner-img" src="" alt="" loading="lazy">
+              <div class="banner-gradient-mask"></div>
+              <div class="banner-color-tint" id="banner-color-tint"></div>
+            </div>
+
+            <div class="card-body">
+              
+              <!-- Left Column: Poster Cover & Key Stats -->
+              <div class="poster-column">
+                <div class="poster-wrapper" id="poster-3d-wrap">
+                  <img class="poster-img" id="poster-img" src="" alt="Anime Cover" loading="eager">
+                  
+                  <!-- Format Pill on Poster -->
+                  <div class="poster-badge-format" id="poster-format-badge">TV</div>
+
+                  <!-- Score Ring / Badge -->
+                  <div class="poster-score-badge" id="poster-score-badge" title="AniList Average Score">
+                    <svg class="score-ring-svg" viewBox="0 0 36 36">
+                      <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      <path class="ring-fill" id="score-ring-fill" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <div class="score-text-val" id="score-val">--%</div>
+                  </div>
+                </div>
+
+                <!-- Watchlist / Favorite Button -->
+                <button type="button" class="btn-save-watchlist" id="toggle-watchlist-btn">
+                  <svg class="icon-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <span id="watchlist-btn-text">Add to Watchlist</span>
+                </button>
+              </div>
+
+              <!-- Right Column: Anime Details & Metadata -->
+              <div class="details-column">
+                
+                <!-- Quick Meta Pills -->
+                <div class="meta-pills-row" id="meta-pills-row">
+                  <span class="meta-pill" id="meta-year">2023</span>
+                  <span class="meta-pill" id="meta-episodes">24 Episodes</span>
+                  <span class="meta-pill" id="meta-status">Finished</span>
+                  <span class="meta-pill studio-pill" id="meta-studio">MAPPA</span>
+                </div>
+
+                <!-- Primary Titles -->
+                <div class="title-block">
+                  <h2 class="anime-title-english" id="anime-title-en">Jujutsu Kaisen</h2>
+                  <div class="anime-title-romaji" id="anime-title-romaji">Jujutsu Kaisen</div>
+                  <div class="anime-title-native" id="anime-title-native">å‘ªè¡“å»»æˆ¦</div>
+                </div>
+
+                <!-- Genre Badges (Click to Filter) -->
+                <div class="card-genres-wrap" id="card-genres-list">
+                  <!-- Dynamic Genre Tags -->
+                </div>
+
+                <!-- Synopsis / Description -->
+                <div class="synopsis-box">
+                  <div class="synopsis-text collapsed" id="anime-synopsis">
+                    Loading synopsis...
+                  </div>
+                  <button type="button" class="btn-expand-synopsis hidden" id="expand-synopsis-btn">
+                    Read More
+                  </button>
+                </div>
+
+                <!-- Next Airing Episode Banner (if active) -->
+                <div class="airing-alert hidden" id="airing-alert">
+                  <span class="airing-pulse"></span>
+                  <span id="airing-alert-text">Next Episode: Episode 5 airing in 2 days</span>
+                </div>
+
+                <!-- Interactive Card Action Bar -->
+                <div class="card-actions-bar">
+                  <!-- Trailer Button (if available) -->
+                  <button type="button" class="btn-action-primary" id="watch-trailer-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>Watch Trailer</span>
+                  </button>
+
+                  <!-- AniList External Link -->
+                  <a href="#" target="_blank" rel="noopener noreferrer" class="btn-action-secondary" id="anilist-link-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    <span>AniList Page</span>
+                  </a>
+
+                  <!-- Copy Details / Share -->
+                  <button type="button" class="btn-action-ghost" id="copy-share-btn" title="Copy title & link to clipboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Share</span>
+                  </button>
+
+                  <!-- Similar Roll Button -->
+                  <button type="button" class="btn-action-ghost" id="roll-similar-btn" title="Roll another anime matching this anime's genres">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="23 4 23 10 17 10"></polyline>
+                      <polyline points="1 20 1 14 7 14"></polyline>
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    <span>Similar Anime</span>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </article>
+
+          <!-- Error / No Results Notice -->
+          <div class="error-notice-card hidden" id="error-notice">
+            <div class="error-icon-box">âš ï¸</div>
+            <div class="error-text-wrap">
+              <h3 class="error-heading" id="error-heading">No Anime Found</h3>
+              <p class="error-detail" id="error-detail">Try loosening some genre filters or lowering the minimum score.</p>
+            </div>
+            <button type="button" class="btn-action-secondary" id="error-reset-btn">Relax Filters</button>
+          </div>
+
+          <!-- Recently Rolled Horizontal Reel -->
+          <section class="recent-reel-section hidden" id="recent-reel-section" aria-label="Recently rolled anime">
+            <div class="recent-reel-header">
+              <div class="reel-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+                <span>Recent Rolls This Session</span>
+              </div>
+              <span class="reel-hint">Click any poster to re-view</span>
+            </div>
+            <div class="recent-strip-scroller" id="recent-strip">
+              <!-- Dynamically populated recent roll thumbnails -->
+            </div>
+          </section>
+
+        </section>
+      </div>
+
+    </main>
+
+    <!-- Trailer Modal -->
+    <div class="modal-overlay hidden" id="trailer-modal" role="dialog" aria-modal="true" aria-labelledby="trailer-modal-title">
+      <div class="modal-dialog trailer-dialog">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="trailer-header-icon">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <h3 class="modal-title" id="trailer-modal-title">Anime Trailer</h3>
+          </div>
+          <div class="trailer-header-actions">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="mini-btn trailer-external-link" id="trailer-yt-direct-btn">
+              Watch on YouTube â†—
+            </a>
+            <button type="button" class="modal-close-btn" id="close-trailer-btn" aria-label="Close Trailer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="modal-body trailer-body">
+          <div class="video-container" id="video-container">
+            <!-- Iframe injected via JS -->
+          </div>
+          <div class="trailer-footer-notice" id="trailer-footer-notice">
+            <div class="notice-info">
+              <span class="notice-icon">ðŸ’¡</span>
+              <span>If playback is restricted by the anime studio or shows <em>"Unavailable"</em>, you can watch it directly:</span>
+            </div>
+            <div class="trailer-fallback-actions">
+              <a href="#" target="_blank" rel="noopener noreferrer" class="mini-btn highlight-btn" id="trailer-fallback-yt-btn">
+                Open Official Trailer on YouTube â†—
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" class="mini-btn" id="trailer-fallback-search-btn">
+                Search Other Trailers on YouTube ðŸ”
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Watchlist Modal / Drawer -->
+    <div class="modal-overlay hidden" id="watchlist-modal" role="dialog" aria-modal="true" aria-labelledby="watchlist-modal-title">
+      <div class="modal-dialog watchlist-dialog">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <h3 class="modal-title" id="watchlist-modal-title">My Saved Watchlist</h3>
+            <span class="count-badge" id="modal-watchlist-count">0</span>
+          </div>
+          <button type="button" class="modal-close-btn" id="close-watchlist-btn" aria-label="Close Watchlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="watchlist-actions-top">
+            <input type="text" id="watchlist-search-input" placeholder="Search saved anime..." class="styled-input">
+            <button type="button" class="mini-btn danger-btn" id="clear-watchlist-btn">Clear All</button>
+          </div>
+          <div class="watchlist-items-list" id="watchlist-items-list">
+            <!-- Dynamic Watchlist Items -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal-overlay hidden" id="history-modal" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
+      <div class="modal-dialog history-dialog">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <h3 class="modal-title" id="history-modal-title">Roll History</h3>
+            <span class="count-badge" id="modal-history-count">0</span>
+          </div>
+          <button type="button" class="modal-close-btn" id="close-history-btn" aria-label="Close History">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="watchlist-actions-top">
+            <span class="subtext">All anime rolled during this session</span>
+            <button type="button" class="mini-btn danger-btn" id="clear-history-btn">Clear History</button>
+          </div>
+          <div class="history-items-list" id="history-items-list">
+            <!-- Dynamic History Items -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p>Built with â¤ï¸ using the official <a href="https://anilist.co" target="_blank" rel="noopener noreferrer">AniList GraphQL API</a>. Data and media belong to their respective creators.</p>
+        <div class="footer-links">
+          <span>Keyboard: <kbd>Space</kbd> to roll â€¢ <kbd>Esc</kbd> to close modals</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+/**
+ * AniPick - Intelligent Anime Randomizer & Discovery Engine
+ * Powered by AniList GraphQL API
+ */
+
+(function () {
+  'use strict';
+
+  // ==========================================================================
+  // State Management
+  // ==========================================================================
+
+  const STATE = {
+    genres: [], // Master list of genres from AniList
+    selectedGenres: new Set(), // Set of included genre names
+    excludedGenres: new Set(), // Set of excluded genre names
+    genreMatchMode: 'ANY', // 'ANY' (OR) or 'ALL' (AND)
+    customTags: new Set(['Band', 'Idol', 'Isekai', 'School', 'Cyberpunk']), // User-defined or suggested custom preferences
+    selectedTags: new Set(), // Set of active included custom tags
+    excludedTags: new Set(), // Set of active excluded custom tags
+    availableAniListTags: [], // Loaded from AniList MediaTagCollection
+    currentFilters: {
+      discoveryMode: 'WILDCARD', // 'WILDCARD', 'POPULARITY_DESC', 'SCORE_DESC', 'HIDDEN_GEMS', 'TRENDING_DESC'
+      format: 'ANY', // 'ANY', 'TV', 'MOVIE', 'OVA_ONA', 'SPECIAL'
+      minScore: 0,
+      era: 'ANY', // 'ANY', '2020', '2010', '2000', '1990'
+      status: 'ANY', // 'ANY', 'FINISHED', 'RELEASING'
+      sfwOnly: true
+    },
+    activePool: [], // Fetched anime matching current filters
+    seenIds: new Set(), // Set of anime IDs already displayed this session
+    currentAnime: null, // The currently displayed anime object
+    rollHistory: [], // Array of anime objects rolled this session
+    watchlist: [], // Saved anime in localStorage
+    soundEnabled: true,
+    isLoading: false,
+    filterSignature: '' // Hash of current filter parameters to detect changes
+  };
+
+  // Preset Collections
+  const PRESETS = {
+    all: { name: 'Any Genre', genres: [], tags: [] },
+    shonen: { name: 'Shonen Hype', genres: ['Action', 'Adventure', 'Fantasy'], tags: [] },
+    romance: { name: 'Sweet Romance', genres: ['Romance', 'Drama', 'Slice of Life'], tags: [] },
+    psychological: { name: 'Mind Games & Thriller', genres: ['Psychological', 'Mystery', 'Thriller'], tags: [] },
+    cozy: { name: 'Cozy Slice of Life', genres: ['Slice of Life', 'Comedy'], tags: [] },
+    cyberpunk: { name: 'Sci-Fi & Mecha', genres: ['Sci-Fi', 'Mecha'], tags: ['Cyberpunk'] },
+    fantasy: { name: 'Magic & Fantasy', genres: ['Fantasy', 'Supernatural', 'Adventure'], tags: [] },
+    comedy: { name: 'Pure Comedy', genres: ['Comedy', 'Slice of Life'], tags: [] },
+    music: { name: 'Music & Bands', genres: ['Music'], tags: ['Band'] },
+    isekai: { name: 'Isekai & Fantasy', genres: ['Fantasy', 'Adventure'], tags: ['Isekai'] }
+  };
+
+  // Fallback genres if network is slow
+  const FALLBACK_GENRES = [
+    'Action', 'Adventure', 'Comedy', 'Drama', 'Ecchi', 'Fantasy', 
+    'Horror', 'Mahou Shoujo', 'Mecha', 'Music', 'Mystery', 
+    'Psychological', 'Romance', 'Sci-Fi', 'Slice of Life', 
+    'Sports', 'Supernatural', 'Thriller'
+  ];
+
+  // Genre emoji icons
+  const GENRE_EMOJIS = {
+    'Action': 'âš”ï¸',
+    'Adventure': 'ðŸ§­',
+    'Comedy': 'ðŸ˜‚',
+    'Drama': 'ðŸŽ­',
+    'Ecchi': 'ðŸ‘',
+    'Fantasy': 'ðŸ”®',
+    'Horror': 'ðŸ©¸',
+    'Mahou Shoujo': 'âœ¨',
+    'Mecha': 'ðŸ¤–',
+    'Music': 'ðŸŽµ',
+    'Mystery': 'ðŸ”',
+    'Psychological': 'ðŸ§ ',
+    'Romance': 'ðŸŒ¸',
+    'Sci-Fi': 'ðŸš€',
+    'Slice of Life': 'â˜•',
+    'Sports': 'âš¡',
+    'Supernatural': 'ðŸ§¿',
+    'Thriller': 'âš¡',
+    'Hentai': 'ðŸ”ž'
+  };
+
+  // ==========================================================================
+  // Audio Synthesizer (Web Audio API)
+  // ==========================================================================
+
+  let audioCtx = null;
+
+  function getAudioContext() {
+    if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContextClass();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function playTickSound() {
+    if (!STATE.soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(450 + Math.random() * 150, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.05);
+
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.05);
+    } catch (e) {}
+  }
+
+  function playFanfareSound() {
+    if (!STATE.soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+
+        gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.08);
+        gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + idx * 0.08 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.35);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(ctx.currentTime + idx * 0.08);
+        osc.stop(ctx.currentTime + idx * 0.08 + 0.35);
+      });
+    } catch (e) {}
+  }
+
+  // ==========================================================================
+  // AniList GraphQL Client
+  // ==========================================================================
+
+  const ANILIST_URL = 'https://graphql.anilist.co';
+
+  async function fetchAniList(query, variables = {}) {
+    const response = await fetch(ANILIST_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ query, variables })
+    });
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error('AniList rate limit reached. Please wait a few moments.');
+      }
+      const errJson = await response.json().catch(() => null);
+      const msg = errJson?.errors?.[0]?.message || `AniList Error: ${response.statusText}`;
+      throw new Error(msg);
+    }
+
+    const json = await response.json();
+    return json.data;
+  }
+
+  // Fetch Master Genre Collection & Media Tag Collection
+  async function loadGenresAndTags() {
+    try {
+      const query = `query { 
+        GenreCollection 
+        MediaTagCollection { 
+          name 
+          category 
+          isAdult 
+        } 
+      }`;
+      const data = await fetchAniList(query);
+      if (data && data.GenreCollection) {
+        STATE.genres = data.GenreCollection.filter(g => g !== 'Hentai');
+      } else {
+        STATE.genres = FALLBACK_GENRES;
+      }
+
+      if (data && data.MediaTagCollection) {
+        STATE.availableAniListTags = data.MediaTagCollection
+          .filter(t => !t.isAdult)
+          .map(t => t.name)
+          .sort();
+        populateTagsDatalist();
+      }
+    } catch (err) {
+      console.warn('Could not load genres/tags dynamically, using fallback', err);
+      STATE.genres = FALLBACK_GENRES;
+    }
+    renderGenreChips();
+    renderCustomTags();
+  }
+
+  function populateTagsDatalist() {
+    const datalist = document.getElementById('anilist-tags-datalist');
+    if (!datalist) return;
+    datalist.innerHTML = '';
+    STATE.availableAniListTags.slice(0, 350).forEach(tagName => {
+      const opt = document.createElement('option');
+      opt.value = tagName;
+      datalist.appendChild(opt);
+    });
+  }
+
+  // ==========================================================================
+  // Query Construction & Randomizer Logic
+  // ==========================================================================
+
+  function computeFilterSignature() {
+    const genres = Array.from(STATE.selectedGenres).sort().join(',');
+    const excluded = Array.from(STATE.excludedGenres).sort().join(',');
+    const tags = Array.from(STATE.selectedTags).sort().join(',');
+    const excludedTags = Array.from(STATE.excludedTags).sort().join(',');
+    const { discoveryMode, format, minScore, era, status, sfwOnly } = STATE.currentFilters;
+    return `${genres}|${excluded}|${tags}|${excludedTags}|${STATE.genreMatchMode}|${discoveryMode}|${format}|${minScore}|${era}|${status}|${sfwOnly}`;
+  }
+
+  function buildGraphQLParams(page = 1, perPage = 25) {
+    const variables = {
+      page: page,
+      perPage: perPage,
+      isAdult: !STATE.currentFilters.sfwOnly ? undefined : false
+    };
+
+    // Genres inclusion & exclusion
+    if (STATE.selectedGenres.size > 0) {
+      variables.genres = Array.from(STATE.selectedGenres);
+    }
+    if (STATE.excludedGenres.size > 0) {
+      variables.excludedGenres = Array.from(STATE.excludedGenres);
+    }
+
+    // Custom Tags inclusion & exclusion
+    if (STATE.selectedTags.size > 0) {
+      variables.tags = Array.from(STATE.selectedTags);
+    }
+    if (STATE.excludedTags.size > 0) {
+      variables.excludedTags = Array.from(STATE.excludedTags);
+    }
+
+    // Format mapping
+    if (STATE.currentFilters.format !== 'ANY') {
+      if (STATE.currentFilters.format === 'OVA_ONA') {
+        variables.format_in = ['OVA', 'ONA'];
+      } else {
+        variables.format_in = [STATE.currentFilters.format];
+      }
+    }
+
+    // Status mapping
+    if (STATE.currentFilters.status !== 'ANY') {
+      variables.status = STATE.currentFilters.status;
+    }
+
+    // Minimum score
+    if (STATE.currentFilters.minScore > 0) {
+      variables.minScore = STATE.currentFilters.minScore;
+    }
+
+    // Era date range
+    if (STATE.currentFilters.era !== 'ANY') {
+      const era = parseInt(STATE.currentFilters.era, 10);
+      if (era === 2020) {
+        variables.startDate_greater = 20200101;
+      } else if (era === 2010) {
+        variables.startDate_greater = 20100101;
+        variables.startDate_lesser = 20191231;
+      } else if (era === 2000) {
+        variables.startDate_greater = 20000101;
+        variables.startDate_lesser = 20091231;
+      } else if (era === 1990) {
+        variables.startDate_lesser = 19991231;
+      }
+    }
+
+    // Sort order & discovery strategy
+    const mode = STATE.currentFilters.discoveryMode;
+    if (mode === 'POPULARITY_DESC') {
+      variables.sort = ['POPULARITY_DESC'];
+    } else if (mode === 'SCORE_DESC') {
+      variables.sort = ['SCORE_DESC'];
+    } else if (mode === 'TRENDING_DESC') {
+      variables.sort = ['TRENDING_DESC'];
+    } else if (mode === 'HIDDEN_GEMS') {
+      variables.sort = ['SCORE_DESC'];
+      if (!variables.minScore) {
+        variables.minScore = 75; // Baseline high rating for hidden gems
+      }
+    } else {
+      // WILDCARD
+      variables.sort = ['POPULARITY_DESC'];
+    }
+
+    return variables;
+  }
+
+  const MEDIA_QUERY = `
+    query (
+      $page: Int,
+      $perPage: Int,
+      $genres: [String],
+      $excludedGenres: [String],
+      $tags: [String],
+      $excludedTags: [String],
+      $format_in: [MediaFormat],
+      $status: MediaStatus,
+      $minScore: Int,
+      $startDate_greater: FuzzyDateInt,
+      $startDate_lesser: FuzzyDateInt,
+      $sort: [MediaSort],
+      $isAdult: Boolean
+    ) {
+      Page(page: $page, perPage: $perPage) {
+        pageInfo {
+          total
+          currentPage
+          lastPage
+          hasNextPage
+        }
+        media(
+          type: ANIME,
+          genre_in: $genres,
+          genre_not_in: $excludedGenres,
+          tag_in: $tags,
+          tag_not_in: $excludedTags,
+          format_in: $format_in,
+          status: $status,
+          averageScore_greater: $minScore,
+          startDate_greater: $startDate_greater,
+          startDate_lesser: $startDate_lesser,
+          sort: $sort,
+          isAdult: $isAdult
+        ) {
+          id
+          title {
+            romaji
+            english
+            native
+          }
+          coverImage {
+            extraLarge
+            large
+            medium
+            color
+          }
+          bannerImage
+          description(asHtml: false)
+          genres
+          tags {
+            name
+            rank
+          }
+          format
+          episodes
+          duration
+          status
+          season
+          seasonYear
+          averageScore
+          popularity
+          favourites
+          studios(isMain: true) {
+            nodes {
+              name
+            }
+          }
+          siteUrl
+          trailer {
+            id
+            site
+          }
+          nextAiringEpisode {
+            airingAt
+            timeUntilAiring
+            episode
+          }
+        }
+      }
+    }
+  `;
+
+  async function fetchAnimePool() {
+    const variables = buildGraphQLParams(1, 25);
+    const data = await fetchAniList(MEDIA_QUERY, variables);
+
+    if (!data?.Page?.media || data.Page.media.length === 0) {
+      return { total: 0, items: [] };
+    }
+
+    const pageInfo = data.Page.pageInfo;
+    let pool = [...data.Page.media];
+
+    // If WILDCARD mode and multiple pages exist, pick a random page to inject deep cuts
+    if (STATE.currentFilters.discoveryMode === 'WILDCARD' && pageInfo.lastPage > 1) {
+      const maxRandomPage = Math.min(pageInfo.lastPage, 25);
+      const randomPage = Math.floor(Math.random() * maxRandomPage) + 1;
+      if (randomPage !== 1) {
+        try {
+          const deepVars = buildGraphQLParams(randomPage, 25);
+          const deepData = await fetchAniList(MEDIA_QUERY, deepVars);
+          if (deepData?.Page?.media && deepData.Page.media.length > 0) {
+            pool = deepData.Page.media;
+          }
+        } catch (e) {
+          // If deep page fetch fails, fallback to page 1 pool
+        }
+      }
+    } else if (STATE.currentFilters.discoveryMode === 'HIDDEN_GEMS' && pageInfo.lastPage > 3) {
+      // Pick lower popularity pages (e.g., page 3-12) with high score
+      const randomPage = Math.min(pageInfo.lastPage, Math.floor(Math.random() * 8) + 3);
+      try {
+        const gemVars = buildGraphQLParams(randomPage, 25);
+        const gemData = await fetchAniList(MEDIA_QUERY, gemVars);
+        if (gemData?.Page?.media?.length > 0) {
+          pool = gemData.Page.media;
+        }
+      } catch (e) {}
+    }
+
+    // Filter for "ALL (AND)" genres and tags mode if requested
+    if (STATE.genreMatchMode === 'ALL') {
+      if (STATE.selectedGenres.size > 0) {
+        const requiredGenres = Array.from(STATE.selectedGenres);
+        pool = pool.filter(anime => {
+          const itemGenres = anime.genres || [];
+          return requiredGenres.every(req => itemGenres.includes(req));
+        });
+      }
+      if (STATE.selectedTags.size > 0) {
+        const requiredTags = Array.from(STATE.selectedTags).map(t => t.toLowerCase());
+        pool = pool.filter(anime => {
+          const itemTags = (anime.tags || []).map(t => (t.name || '').toLowerCase());
+          return requiredTags.every(t => itemTags.includes(t));
+        });
+      }
+    }
+
+    return { total: pageInfo.total, items: pool };
+  }
+
+  // Master Randomizer Entrypoint
+  async function rollRandomAnime() {
+    if (STATE.isLoading) return;
+
+    const newSig = computeFilterSignature();
+    const filterChanged = newSig !== STATE.filterSignature;
+
+    if (filterChanged) {
+      STATE.filterSignature = newSig;
+      STATE.activePool = [];
+    }
+
+    setLoading(true);
+
+    try {
+      // Check if we need to replenish the pool
+      let candidates = STATE.activePool.filter(a => !STATE.seenIds.has(a.id));
+
+      if (candidates.length === 0) {
+        updateCatalogStatus('Searching AniList catalog...');
+        const result = await fetchAnimePool();
+
+        if (!result.items || result.items.length === 0) {
+          showErrorState(
+            'No Anime Found',
+            'No titles matched your specific filter combination. Try selecting fewer tags/genres or lowering the minimum score.'
+          );
+          setLoading(false);
+          return;
+        }
+
+        STATE.activePool = result.items;
+        candidates = STATE.activePool.filter(a => !STATE.seenIds.has(a.id));
+
+        // If all candidates in current pool were seen, reset seen IDs for this pool to loop seamlessly
+        if (candidates.length === 0) {
+          candidates = [...STATE.activePool];
+        }
+
+        updateCatalogStatus(`Discovered ${result.total.toLocaleString()} anime in this pool`);
+      }
+
+      // Pick random anime
+      const randomIndex = Math.floor(Math.random() * candidates.length);
+      const chosen = candidates[randomIndex];
+      STATE.seenIds.add(chosen.id);
+
+      // Run Roulette / Slot-Machine Ticker Animation
+      await runRouletteAnimation(candidates, chosen);
+
+      // Reveal Chosen Anime
+      displayAnime(chosen);
+      addToHistory(chosen);
+      playFanfareSound();
+
+    } catch (err) {
+      console.error(err);
+      showErrorState('Error Connecting to AniList', err.message || 'Unable to fetch recommendations right now.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Slot machine animation effect
+  async function runRouletteAnimation(samplePool, winner) {
+    const ticker = document.getElementById('slot-ticker');
+    const tickerTitle = document.getElementById('ticker-preview-title');
+    const card = document.getElementById('anime-card');
+    const emptyView = document.getElementById('empty-state-view');
+
+    card.classList.add('hidden');
+    emptyView.classList.add('hidden');
+    ticker.classList.remove('hidden');
+
+    const previewTitles = samplePool.map(a => a.title.english || a.title.romaji).filter(Boolean);
+    if (previewTitles.length === 0) {
+      previewTitles.push(winner.title.english || winner.title.romaji);
+    }
+
+    // Cycle through 8 rapid preview steps with audio ticks
+    const steps = 8;
+    for (let i = 0; i < steps; i++) {
+      const sample = previewTitles[i % previewTitles.length];
+      tickerTitle.textContent = sample;
+      playTickSound();
+      const delay = 60 + i * 25; // Gradual slowdown
+      await new Promise(r => setTimeout(r, delay));
+    }
+
+    ticker.classList.add('hidden');
+  }
+
+  // ==========================================================================
+  // Display & UI Rendering
+  // ==========================================================================
+
+  function displayAnime(anime) {
+    STATE.currentAnime = anime;
+
+    const emptyView = document.getElementById('empty-state-view');
+    const errorNotice = document.getElementById('error-notice');
+    const card = document.getElementById('anime-card');
+
+    emptyView.classList.add('hidden');
+    errorNotice.classList.add('hidden');
+    card.classList.remove('hidden');
+
+    // Banner image & color tint
+    const bannerImg = document.getElementById('card-banner-img');
+    const colorTint = document.getElementById('banner-color-tint');
+    const coverColor = anime.coverImage?.color || '#8b5cf6';
+
+    const bannerUrl = anime.bannerImage || anime.coverImage?.extraLarge || anime.coverImage?.large;
+    bannerImg.src = bannerUrl;
+    bannerImg.alt = `${anime.title.romaji} Banner`;
+    colorTint.style.backgroundColor = coverColor;
+
+    // Poster & Format
+    const posterImg = document.getElementById('poster-img');
+    posterImg.src = anime.coverImage?.extraLarge || anime.coverImage?.large || '';
+    posterImg.alt = `${anime.title.romaji} Poster`;
+
+    const formatBadge = document.getElementById('poster-format-badge');
+    const formatName = formatFormatName(anime.format);
+    formatBadge.textContent = formatName;
+
+    // Score radial
+    const scoreVal = document.getElementById('score-val');
+    const ringFill = document.getElementById('score-ring-fill');
+    const score = anime.averageScore;
+
+    if (score) {
+      scoreVal.textContent = `${score}%`;
+      ringFill.setAttribute('stroke-dasharray', `${score}, 100`);
+      if (score >= 80) {
+        ringFill.setAttribute('stroke', '#10b981'); // Emerald
+      } else if (score >= 70) {
+        ringFill.setAttribute('stroke', '#38bdf8'); // Sky Blue
+      } else if (score >= 60) {
+        ringFill.setAttribute('stroke', '#f59e0b'); // Amber
+      } else {
+        ringFill.setAttribute('stroke', '#f43f5e'); // Rose
+      }
+    } else {
+      scoreVal.textContent = 'N/A';
+      ringFill.setAttribute('stroke-dasharray', `0, 100`);
+    }
+
+    // Titles
+    const enTitle = anime.title.english || anime.title.romaji;
+    document.getElementById('anime-title-en').textContent = enTitle;
+
+    const romajiElem = document.getElementById('anime-title-romaji');
+    if (anime.title.english && anime.title.romaji && anime.title.english !== anime.title.romaji) {
+      romajiElem.textContent = anime.title.romaji;
+      romajiElem.classList.remove('hidden');
+    } else {
+      romajiElem.classList.add('hidden');
+    }
+
+    const nativeElem = document.getElementById('anime-title-native');
+    if (anime.title.native) {
+      nativeElem.textContent = anime.title.native;
+      nativeElem.classList.remove('hidden');
+    } else {
+      nativeElem.classList.add('hidden');
+    }
+
+    // Metadata Pills
+    const metaYear = document.getElementById('meta-year');
+    metaYear.textContent = anime.seasonYear || (anime.season ? `${anime.season}` : 'Unknown Year');
+
+    const metaEpisodes = document.getElementById('meta-episodes');
+    if (anime.episodes) {
+      metaEpisodes.textContent = `${anime.episodes} ${anime.episodes === 1 ? 'Episode' : 'Episodes'}${anime.duration ? ` (${anime.duration}m)` : ''}`;
+      metaEpisodes.classList.remove('hidden');
+    } else {
+      metaEpisodes.classList.add('hidden');
+    }
+
+    const metaStatus = document.getElementById('meta-status');
+    metaStatus.textContent = anime.status ? anime.status.replace(/_/g, ' ') : 'Finished';
+
+    const metaStudio = document.getElementById('meta-studio');
+    const studioName = anime.studios?.nodes?.[0]?.name;
+    if (studioName) {
+      metaStudio.textContent = studioName;
+      metaStudio.classList.remove('hidden');
+    } else {
+      metaStudio.classList.add('hidden');
+    }
+
+    // Genres & Tags Wrap
+    const genresWrap = document.getElementById('card-genres-list');
+    genresWrap.innerHTML = '';
+    (anime.genres || []).forEach(genre => {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'card-genre-pill';
+      pill.textContent = `${GENRE_EMOJIS[genre] || 'ðŸ·ï¸'} ${genre}`;
+      pill.title = `Click to filter by ${genre}`;
+      pill.addEventListener('click', () => {
+        STATE.selectedGenres.clear();
+        STATE.selectedGenres.add(genre);
+        renderGenreChips();
+        rollRandomAnime();
+        showToast(`Filtered for ${genre}`, 'info');
+      });
+      genresWrap.appendChild(pill);
+    });
+
+    // Add up to 3 notable tags to card
+    (anime.tags || []).slice(0, 3).forEach(tag => {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'card-genre-pill';
+      pill.style.borderColor = 'rgba(6, 182, 212, 0.4)';
+      pill.style.color = '#67e8f9';
+      pill.textContent = `#${tag.name}`;
+      pill.title = `Click to add tag filter: ${tag.name}`;
+      pill.addEventListener('click', () => {
+        addCustomTag(tag.name);
+        rollRandomAnime();
+      });
+      genresWrap.appendChild(pill);
+    });
+
+    // Synopsis with cleaner text
+    const synopsisElem = document.getElementById('anime-synopsis');
+    const expandBtn = document.getElementById('expand-synopsis-btn');
+    const cleanDesc = sanitizeSynopsis(anime.description || 'No synopsis provided for this anime.');
+    synopsisElem.innerHTML = cleanDesc;
+
+    if (cleanDesc.length > 250) {
+      synopsisElem.classList.add('collapsed');
+      expandBtn.classList.remove('hidden');
+      expandBtn.textContent = 'Read More';
+    } else {
+      synopsisElem.classList.remove('collapsed');
+      expandBtn.classList.add('hidden');
+    }
+
+    // Airing notification
+    const airingAlert = document.getElementById('airing-alert');
+    if (anime.nextAiringEpisode) {
+      const nextEp = anime.nextAiringEpisode;
+      const days = Math.floor(nextEp.timeUntilAiring / (3600 * 24));
+      const hours = Math.floor((nextEp.timeUntilAiring % (3600 * 24)) / 3600);
+      let timeStr = `${days}d ${hours}h`;
+      if (days === 0) timeStr = `${hours}h`;
+      document.getElementById('airing-alert-text').textContent = `Episode ${nextEp.episode} airs in ~${timeStr}`;
+      airingAlert.classList.remove('hidden');
+    } else {
+      airingAlert.classList.add('hidden');
+    }
+
+    // Watchlist state on card button
+    updateWatchlistButtonState();
+
+    // Trailer Button: Always accessible with smart Watch or Search mode
+    const trailerBtn = document.getElementById('watch-trailer-btn');
+    const hasOfficialTrailer = Boolean(anime.trailer && anime.trailer.id && (anime.trailer.site === 'youtube' || anime.trailer.site === 'dailymotion'));
+    trailerBtn.classList.remove('hidden');
+    if (hasOfficialTrailer) {
+      trailerBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        <span>Watch Trailer</span>
+      `;
+      trailerBtn.title = 'Watch official trailer';
+    } else {
+      trailerBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        <span>Find Trailer</span>
+      `;
+      trailerBtn.title = 'Search official trailer on YouTube';
+    }
+
+    // AniList link
+    const anilistLink = document.getElementById('anilist-link-btn');
+    anilistLink.href = anime.siteUrl || `https://anilist.co/anime/${anime.id}`;
+
+    // Scroll smoothly to show card on mobile if needed
+    if (window.innerWidth <= 768) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function formatFormatName(format) {
+    switch (format) {
+      case 'TV': return 'TV Series';
+      case 'TV_SHORT': return 'TV Short';
+      case 'MOVIE': return 'Movie';
+      case 'SPECIAL': return 'Special';
+      case 'OVA': return 'OVA';
+      case 'ONA': return 'ONA Web';
+      case 'MUSIC': return 'Music Video';
+      default: return format || 'Anime';
+    }
+  }
+
+  function sanitizeSynopsis(html) {
+    if (!html) return '';
+    return html
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<\/?i>/gi, '')
+      .replace(/<\/?b>/gi, '')
+      .replace(/<\/?strong>/gi, '')
+      .replace(/<\/?em>/gi, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  function updateCatalogStatus(text) {
+    document.getElementById('catalog-status-text').textContent = text;
+  }
+
+  function setLoading(loading) {
+    STATE.isLoading = loading;
+    const rollBtn = document.getElementById('roll-anime-btn');
+    const surpriseBtn = document.getElementById('surprise-me-btn');
+    const btnText = document.getElementById('roll-btn-text');
+
+    rollBtn.disabled = loading;
+    surpriseBtn.disabled = loading;
+
+    if (loading) {
+      btnText.textContent = 'Rolling Random Anime...';
+    } else {
+      btnText.textContent = 'Roll Random Anime';
+    }
+  }
+
+  function showErrorState(title, detail) {
+    const errorNotice = document.getElementById('error-notice');
+    const emptyView = document.getElementById('empty-state-view');
+    const card = document.getElementById('anime-card');
+
+    card.classList.add('hidden');
+    emptyView.classList.add('hidden');
+    errorNotice.classList.remove('hidden');
+
+    document.getElementById('error-heading').textContent = title;
+    document.getElementById('error-detail').textContent = detail;
+  }
+
+  // ==========================================================================
+  // Genre Pills Interaction
+  // ==========================================================================
+
+  function renderGenreChips() {
+    const grid = document.getElementById('genre-chip-grid');
+    grid.innerHTML = '';
+
+    STATE.genres.forEach(genre => {
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'genre-badge';
+      badge.dataset.genre = genre;
+
+      const isIncluded = STATE.selectedGenres.has(genre);
+      const isExcluded = STATE.excludedGenres.has(genre);
+
+      let symbol = '+';
+      if (isIncluded) {
+        badge.classList.add('included');
+        symbol = 'âœ“';
+      } else if (isExcluded) {
+        badge.classList.add('excluded');
+        symbol = 'âœ•';
+      }
+
+      badge.innerHTML = `
+        <span class="badge-emoji">${GENRE_EMOJIS[genre] || 'ðŸ·ï¸'}</span>
+        <span class="badge-name">${genre}</span>
+        <span class="badge-symbol">${symbol}</span>
+      `;
+
+      // Click: Normal toggle (Neutral <-> Included) or if Shift key is pressed, toggle Excluded
+      badge.addEventListener('click', (e) => {
+        if (e.shiftKey) {
+          toggleGenreExclude(genre);
+        } else {
+          toggleGenreInclude(genre);
+        }
+      });
+
+      // Right-click: Toggle Excluded state
+      badge.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        toggleGenreExclude(genre);
+      });
+
+      grid.appendChild(badge);
+    });
+
+    updateGenreHint();
+  }
+
+  function toggleGenreInclude(genre) {
+    if (STATE.excludedGenres.has(genre)) {
+      STATE.excludedGenres.delete(genre);
+    }
+
+    if (STATE.selectedGenres.has(genre)) {
+      STATE.selectedGenres.delete(genre);
+    } else {
+      STATE.selectedGenres.add(genre);
+    }
+
+    renderGenreChips();
+  }
+
+  function toggleGenreExclude(genre) {
+    if (STATE.selectedGenres.has(genre)) {
+      STATE.selectedGenres.delete(genre);
+    }
+
+    if (STATE.excludedGenres.has(genre)) {
+      STATE.excludedGenres.delete(genre);
+    } else {
+      STATE.excludedGenres.add(genre);
+    }
+
+    renderGenreChips();
+    showToast(`Excluded ${genre} from results`, 'info');
+  }
+
+  function updateGenreHint() {
+    const hint = document.getElementById('genre-hint-count');
+    const incCount = STATE.selectedGenres.size;
+    const excCount = STATE.excludedGenres.size;
+
+    if (incCount === 0 && excCount === 0) {
+      hint.textContent = 'All genres (broad discovery)';
+    } else if (excCount > 0) {
+      hint.textContent = `${incCount} included, ${excCount} excluded`;
+    } else {
+      hint.textContent = `${incCount} selected`;
+    }
+  }
+
+  // ==========================================================================
+  // Custom Tags & User Preferences Management
+  // ==========================================================================
+
+  const CUSTOM_TAGS_STORAGE_KEY = 'anipick_custom_tags_v1';
+
+  function loadCustomTagsFromStorage() {
+    try {
+      const saved = localStorage.getItem(CUSTOM_TAGS_STORAGE_KEY);
+      if (saved) {
+        const arr = JSON.parse(saved);
+        if (Array.isArray(arr) && arr.length > 0) {
+          STATE.customTags = new Set(arr);
+        }
+      }
+    } catch (e) {}
+  }
+
+  function saveCustomTagsToStorage() {
+    try {
+      localStorage.setItem(CUSTOM_TAGS_STORAGE_KEY, JSON.stringify(Array.from(STATE.customTags)));
+    } catch (e) {}
+  }
+
+  function addCustomTag(name) {
+    const trimmed = (name || '').trim();
+    if (!trimmed) return;
+
+    // Check if user typed an official AniList Genre
+    const matchGenre = STATE.genres.find(g => g.toLowerCase() === trimmed.toLowerCase());
+    if (matchGenre) {
+      STATE.selectedGenres.add(matchGenre);
+      renderGenreChips();
+      showToast(`Selected official genre: ${matchGenre}`, 'success');
+      return;
+    }
+
+    // Check if matches an official AniList tag
+    const matchTag = STATE.availableAniListTags.find(t => t.toLowerCase() === trimmed.toLowerCase()) || trimmed;
+
+    STATE.customTags.add(matchTag);
+    STATE.selectedTags.add(matchTag);
+    saveCustomTagsToStorage();
+    renderCustomTags();
+    showToast(`Added custom preference: ${matchTag}`, 'success');
+  }
+
+  function removeCustomTag(tag) {
+    STATE.customTags.delete(tag);
+    STATE.selectedTags.delete(tag);
+    STATE.excludedTags.delete(tag);
+    saveCustomTagsToStorage();
+    renderCustomTags();
+    showToast(`Removed preference: ${tag}`, 'info');
+  }
+
+  function renderCustomTags() {
+    const grid = document.getElementById('custom-chip-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    STATE.customTags.forEach(tag => {
+      const badge = document.createElement('div');
+      badge.className = 'custom-tag-badge';
+
+      const isIncluded = STATE.selectedTags.has(tag);
+      const isExcluded = STATE.excludedTags.has(tag);
+
+      let symbol = '+';
+      if (isIncluded) {
+        badge.classList.add('included');
+        symbol = 'âœ“';
+      } else if (isExcluded) {
+        badge.classList.add('excluded');
+        symbol = 'âœ•';
+      }
+
+      badge.innerHTML = `
+        <span class="custom-badge-emoji">ðŸ·ï¸</span>
+        <span class="custom-badge-name">${tag}</span>
+        <span class="badge-symbol">${symbol}</span>
+        <button type="button" class="btn-remove-tag" title="Remove this preference" data-tag="${tag}">Ã—</button>
+      `;
+
+      badge.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-remove-tag')) return;
+        if (e.shiftKey) {
+          toggleTagExclude(tag);
+        } else {
+          toggleTagInclude(tag);
+        }
+      });
+
+      badge.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        toggleTagExclude(tag);
+      });
+
+      badge.querySelector('.btn-remove-tag').addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeCustomTag(tag);
+      });
+
+      grid.appendChild(badge);
+    });
+
+    updateCustomTagsHint();
+  }
+
+  function toggleTagInclude(tag) {
+    if (STATE.excludedTags.has(tag)) {
+      STATE.excludedTags.delete(tag);
+    }
+    if (STATE.selectedTags.has(tag)) {
+      STATE.selectedTags.delete(tag);
+    } else {
+      STATE.selectedTags.add(tag);
+    }
+    renderCustomTags();
+  }
+
+  function toggleTagExclude(tag) {
+    if (STATE.selectedTags.has(tag)) {
+      STATE.selectedTags.delete(tag);
+    }
+    if (STATE.excludedTags.has(tag)) {
+      STATE.excludedTags.delete(tag);
+    } else {
+      STATE.excludedTags.add(tag);
+    }
+    renderCustomTags();
+    showToast(`Excluded tag: ${tag}`, 'info');
+  }
+
+  function updateCustomTagsHint() {
+    const hint = document.getElementById('custom-tags-hint');
+    if (!hint) return;
+    const inc = STATE.selectedTags.size;
+    const exc = STATE.excludedTags.size;
+    if (inc === 0 && exc === 0) {
+      hint.textContent = `${STATE.customTags.size} available`;
+    } else if (exc > 0) {
+      hint.textContent = `${inc} active, ${exc} excluded`;
+    } else {
+      hint.textContent = `${inc} active`;
+    }
+  }
+
+  // ==========================================================================
+  // Presets & Filter Deck Controls
+  // ==========================================================================
+
+  function applyPreset(presetKey) {
+    const preset = PRESETS[presetKey];
+    if (!preset) return;
+
+    STATE.selectedGenres.clear();
+    STATE.excludedGenres.clear();
+    STATE.selectedTags.clear();
+    STATE.excludedTags.clear();
+
+    preset.genres.forEach(g => STATE.selectedGenres.add(g));
+    if (preset.tags) {
+      preset.tags.forEach(t => {
+        STATE.customTags.add(t);
+        STATE.selectedTags.add(t);
+      });
+      renderCustomTags();
+    }
+    renderGenreChips();
+
+    // Highlight active preset button
+    document.querySelectorAll('.preset-chip').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.preset === presetKey);
+    });
+
+    showToast(`Preset loaded: ${preset.name}`, 'info');
+  }
+
+  function resetAllFilters() {
+    STATE.selectedGenres.clear();
+    STATE.excludedGenres.clear();
+    STATE.selectedTags.clear();
+    STATE.excludedTags.clear();
+    STATE.genreMatchMode = 'ANY';
+
+    STATE.currentFilters = {
+      discoveryMode: 'WILDCARD',
+      format: 'ANY',
+      minScore: 0,
+      era: 'ANY',
+      status: 'ANY',
+      sfwOnly: true
+    };
+
+    // Reset Form DOM elements
+    document.getElementById('filter-mode').value = 'WILDCARD';
+    document.getElementById('filter-format').value = 'ANY';
+    document.getElementById('filter-score').value = 0;
+    document.getElementById('score-display').textContent = 'Any Score';
+    document.getElementById('filter-era').value = 'ANY';
+    document.getElementById('filter-status').value = 'ANY';
+    document.getElementById('sfw-only-checkbox').checked = true;
+
+    document.getElementById('mode-any-btn').classList.add('active');
+    document.getElementById('mode-all-btn').classList.remove('active');
+
+    // Preset chips
+    document.querySelectorAll('.preset-chip').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.preset === 'all');
+    });
+
+    renderGenreChips();
+    renderCustomTags();
+    updateCatalogStatus('Filters reset. Ready to roll!');
+    showToast('All filters have been reset', 'info');
+  }
+
+  // ==========================================================================
+  // Watchlist & History Management
+  // ==========================================================================
+
+  const WATCHLIST_STORAGE_KEY = 'anipick_watchlist_v1';
+  const HISTORY_STORAGE_KEY = 'anipick_history_v1';
+
+  function loadSavedData() {
+    try {
+      const savedWatchlist = localStorage.getItem(WATCHLIST_STORAGE_KEY);
+      if (savedWatchlist) {
+        STATE.watchlist = JSON.parse(savedWatchlist);
+      }
+      const savedHistory = localStorage.getItem(HISTORY_STORAGE_KEY);
+      if (savedHistory) {
+        STATE.rollHistory = JSON.parse(savedHistory);
+      }
+    } catch (e) {
+      console.warn('Could not read from localStorage', e);
+    }
+    loadCustomTagsFromStorage();
+    updateWatchlistBadge();
+    updateHistoryBadge();
+    renderRecentReel();
+  }
+
+  function saveWatchlist() {
+    try {
+      localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(STATE.watchlist));
+    } catch (e) {}
+    updateWatchlistBadge();
+    updateWatchlistButtonState();
+  }
+
+  function saveHistory() {
+    try {
+      // Limit saved history to last 50 items
+      const trimmed = STATE.rollHistory.slice(0, 50);
+      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(trimmed));
+    } catch (e) {}
+    updateHistoryBadge();
+    renderRecentReel();
+  }
+
+  function toggleWatchlistCurrentAnime() {
+    if (!STATE.currentAnime) return;
+    const anime = STATE.currentAnime;
+    const existingIndex = STATE.watchlist.findIndex(item => item.id === anime.id);
+
+    if (existingIndex >= 0) {
+      STATE.watchlist.splice(existingIndex, 1);
+      showToast('Removed from Watchlist', 'info');
+    } else {
+      STATE.watchlist.unshift({
+        id: anime.id,
+        title: anime.title,
+        coverImage: anime.coverImage,
+        format: anime.format,
+        averageScore: anime.averageScore,
+        genres: anime.genres,
+        siteUrl: anime.siteUrl,
+        savedAt: Date.now()
+      });
+      showToast('Saved to Watchlist!', 'success');
+    }
+
+    saveWatchlist();
+  }
+
+  function updateWatchlistButtonState() {
+    const btn = document.getElementById('toggle-watchlist-btn');
+    const text = document.getElementById('watchlist-btn-text');
+    if (!STATE.currentAnime) return;
+
+    const isSaved = STATE.watchlist.some(item => item.id === STATE.currentAnime.id);
+    if (isSaved) {
+      btn.classList.add('saved');
+      text.textContent = 'Saved to Watchlist';
+    } else {
+      btn.classList.remove('saved');
+      text.textContent = 'Add to Watchlist';
+    }
+  }
+
+  function updateWatchlistBadge() {
+    const count = STATE.watchlist.length;
+    document.getElementById('watchlist-count').textContent = count;
+    document.getElementById('modal-watchlist-count').textContent = count;
+  }
+
+  function addToHistory(anime) {
+    if (STATE.rollHistory.length > 0 && STATE.rollHistory[0].id === anime.id) {
+      return;
+    }
+    STATE.rollHistory.unshift(anime);
+    saveHistory();
+  }
+
+  function updateHistoryBadge() {
+    const count = STATE.rollHistory.length;
+    document.getElementById('history-count').textContent = count;
+    document.getElementById('modal-history-count').textContent = count;
+  }
+
+  function renderRecentReel() {
+    const section = document.getElementById('recent-reel-section');
+    const strip = document.getElementById('recent-strip');
+
+    if (STATE.rollHistory.length <= 1) {
+      section.classList.add('hidden');
+      return;
+    }
+
+    section.classList.remove('hidden');
+    strip.innerHTML = '';
+
+    // Show previous rolls (excluding current)
+    const recentItems = STATE.rollHistory.slice(1, 15);
+    recentItems.forEach(item => {
+      const thumb = document.createElement('div');
+      thumb.className = 'recent-thumb-card';
+      thumb.title = item.title.english || item.title.romaji;
+
+      thumb.innerHTML = `
+        <img class="recent-thumb-img" src="${item.coverImage?.medium || item.coverImage?.large}" alt="${item.title.romaji}" loading="lazy">
+        ${item.averageScore ? `<div class="recent-thumb-score">${item.averageScore}%</div>` : ''}
+        <div class="recent-thumb-title">${item.title.english || item.title.romaji}</div>
+      `;
+
+      thumb.addEventListener('click', () => {
+        displayAnime(item);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      strip.appendChild(thumb);
+    });
+  }
+
+  // Render Watchlist Modal List
+  function renderWatchlistModal() {
+    const list = document.getElementById('watchlist-items-list');
+    const filterQuery = (document.getElementById('watchlist-search-input').value || '').toLowerCase().trim();
+
+    list.innerHTML = '';
+
+    const filtered = STATE.watchlist.filter(item => {
+      if (!filterQuery) return true;
+      const title = (item.title.english || item.title.romaji || '').toLowerCase();
+      return title.includes(filterQuery);
+    });
+
+    if (filtered.length === 0) {
+      list.innerHTML = `
+        <div style="text-align:center; padding: 2.5rem 1rem; color: var(--text-muted);">
+          ${filterQuery ? 'No saved anime matches your search.' : 'Your watchlist is empty! Roll some anime and save them here.'}
+        </div>
+      `;
+      return;
+    }
+
+    filtered.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'watchlist-item';
+
+      const title = item.title.english || item.title.romaji;
+      const format = formatFormatName(item.format);
+
+      row.innerHTML = `
+        <img class="watchlist-thumb" src="${item.coverImage?.medium || item.coverImage?.large}" alt="${title}">
+        <div class="watchlist-details">
+          <div class="watchlist-title" title="${title}">${title}</div>
+          <div class="watchlist-meta">${format} â€¢ ${item.averageScore ? `${item.averageScore}% Score` : 'No score'}</div>
+        </div>
+        <div class="watchlist-actions">
+          <a href="${item.siteUrl || `https://anilist.co/anime/${item.id}`}" target="_blank" rel="noopener noreferrer" class="mini-btn" title="View on AniList">
+            Link â†—
+          </a>
+          <button type="button" class="mini-btn danger-btn remove-saved-btn" title="Remove from watchlist" data-id="${item.id}">
+            âœ•
+          </button>
+        </div>
+      `;
+
+      row.querySelector('.watchlist-details').addEventListener('click', () => {
+        displayAnime(item);
+        closeModal('watchlist-modal');
+      });
+
+      row.querySelector('.remove-saved-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        STATE.watchlist = STATE.watchlist.filter(w => w.id !== item.id);
+        saveWatchlist();
+        renderWatchlistModal();
+      });
+
+      list.appendChild(row);
+    });
+  }
+
+  // Render History Modal List
+  function renderHistoryModal() {
+    const list = document.getElementById('history-items-list');
+    list.innerHTML = '';
+
+    if (STATE.rollHistory.length === 0) {
+      list.innerHTML = `
+        <div style="text-align:center; padding: 2.5rem 1rem; color: var(--text-muted);">
+          No rolls recorded yet this session. Click Roll Anime to begin!
+        </div>
+      `;
+      return;
+    }
+
+    STATE.rollHistory.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'history-item';
+
+      const title = item.title.english || item.title.romaji;
+      const format = formatFormatName(item.format);
+
+      row.innerHTML = `
+        <img class="history-thumb" src="${item.coverImage?.medium || item.coverImage?.large}" alt="${title}">
+        <div class="history-details">
+          <div class="history-title" title="${title}">${title}</div>
+          <div class="history-meta">${format} â€¢ ${item.seasonYear || ''} â€¢ ${item.averageScore ? `${item.averageScore}%` : 'N/A'}</div>
+        </div>
+        <button type="button" class="mini-btn view-roll-btn">
+          View
+        </button>
+      `;
+
+      row.querySelector('.view-roll-btn').addEventListener('click', () => {
+        displayAnime(item);
+        closeModal('history-modal');
+      });
+
+      list.appendChild(row);
+    });
+  }
+
+  // ==========================================================================
+  // Modal & Video Dialogs
+  // ==========================================================================
+
+  function extractVideoId(raw) {
+    if (!raw) return '';
+    const clean = String(raw).trim();
+    // Match standard 11-char YouTube ID even if raw was a URL or contains query parameters
+    const match = clean.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)|(?:^|\W))([a-zA-Z0-9_-]{11})(?:$|\W)/);
+    if (match && match[1]) {
+      return match[1];
+    }
+    return clean.replace(/[^a-zA-Z0-9_-]/g, '');
+  }
+
+  function openTrailerModal() {
+    if (!STATE.currentAnime) return;
+    const anime = STATE.currentAnime;
+    const title = anime.title.english || anime.title.romaji;
+    const container = document.getElementById('video-container');
+    const directBtn = document.getElementById('trailer-yt-direct-btn');
+    const fallbackYtBtn = document.getElementById('trailer-fallback-yt-btn');
+    const fallbackSearchBtn = document.getElementById('trailer-fallback-search-btn');
+    const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(title + ' anime official trailer')}`;
+
+    if (fallbackSearchBtn) {
+      fallbackSearchBtn.href = searchUrl;
+    }
+
+    const rawSite = (anime.trailer?.site || '').toLowerCase();
+    const rawId = anime.trailer?.id;
+    const videoId = extractVideoId(rawId);
+
+    // If no trailer was provided by AniList for this anime, open YouTube search directly
+    if (!videoId) {
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+      showToast(`Opening YouTube search for "${title}" trailer...`, 'info');
+      return;
+    }
+
+    if (rawSite === 'youtube') {
+      const ytWatchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+      if (directBtn) {
+        directBtn.href = ytWatchUrl;
+        directBtn.textContent = 'Watch on YouTube â†—';
+        directBtn.classList.remove('hidden');
+      }
+      if (fallbackYtBtn) {
+        fallbackYtBtn.href = ytWatchUrl;
+        fallbackYtBtn.textContent = 'Open Official Trailer on YouTube â†—';
+        fallbackYtBtn.classList.remove('hidden');
+      }
+
+      // Standard youtube.com embed with strict-origin-when-cross-origin referrerpolicy
+      const pageOrigin = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://localhost';
+      container.innerHTML = `
+        <iframe 
+          src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&origin=${encodeURIComponent(pageOrigin)}" 
+          title="${title} Official Trailer" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      `;
+    } else if (rawSite === 'dailymotion') {
+      const dmUrl = `https://www.dailymotion.com/video/${videoId}`;
+      if (directBtn) {
+        directBtn.href = dmUrl;
+        directBtn.textContent = 'Watch on Dailymotion â†—';
+        directBtn.classList.remove('hidden');
+      }
+      if (fallbackYtBtn) {
+        fallbackYtBtn.href = dmUrl;
+        fallbackYtBtn.textContent = 'Open on Dailymotion â†—';
+        fallbackYtBtn.classList.remove('hidden');
+      }
+
+      container.innerHTML = `
+        <iframe 
+          src="https://www.dailymotion.com/embed/video/${videoId}?autoplay=1" 
+          title="${title} Official Trailer" 
+          allow="autoplay; fullscreen; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      `;
+    } else {
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+      showToast(`Opening YouTube search for "${title}" trailer...`, 'info');
+      return;
+    }
+
+    document.getElementById('trailer-modal-title').textContent = `${title} â€” Official Trailer`;
+    document.getElementById('trailer-modal').classList.remove('hidden');
+  }
+
+  function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    modal.classList.add('hidden');
+
+    if (modalId === 'trailer-modal') {
+      document.getElementById('video-container').innerHTML = '';
+    }
+  }
+
+  // ==========================================================================
+  // Toast Notifications
+  // ==========================================================================
+
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+
+    let icon = 'â„¹ï¸';
+    if (type === 'success') icon = 'âœ…';
+    if (type === 'warning') icon = 'âš ï¸';
+
+    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      toast.style.transition = 'all 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 3200);
+  }
+
+  // ==========================================================================
+  // Event Listeners & Wire-up
+  // ==========================================================================
+
+  function setupEventListeners() {
+    // Master Roll Button
+    document.getElementById('roll-anime-btn').addEventListener('click', rollRandomAnime);
+
+    // Surprise Me Button
+    document.getElementById('surprise-me-btn').addEventListener('click', () => {
+      resetAllFilters();
+      rollRandomAnime();
+    });
+
+    // Reset Filters Button
+    document.getElementById('reset-filters-btn').addEventListener('click', resetAllFilters);
+    document.getElementById('error-reset-btn').addEventListener('click', resetAllFilters);
+
+    // Genre Presets
+    document.getElementById('presets-list').addEventListener('click', (e) => {
+      const chip = e.target.closest('.preset-chip');
+      if (chip && chip.dataset.preset) {
+        applyPreset(chip.dataset.preset);
+      }
+    });
+
+    // Genre Select All & Clear
+    document.getElementById('select-all-genres-btn').addEventListener('click', () => {
+      STATE.selectedGenres.clear();
+      STATE.excludedGenres.clear();
+      STATE.genres.forEach(g => STATE.selectedGenres.add(g));
+      renderGenreChips();
+      showToast('All genres selected', 'info');
+    });
+
+    document.getElementById('clear-all-genres-btn').addEventListener('click', () => {
+      STATE.selectedGenres.clear();
+      STATE.excludedGenres.clear();
+      renderGenreChips();
+      showToast('Genre filters cleared', 'info');
+    });
+
+    // Genre Mode Toggle (Any / All)
+    document.getElementById('mode-any-btn').addEventListener('click', () => {
+      STATE.genreMatchMode = 'ANY';
+      document.getElementById('mode-any-btn').classList.add('active');
+      document.getElementById('mode-all-btn').classList.remove('active');
+      showToast('Matching ANY selected genre (OR)', 'info');
+    });
+
+    document.getElementById('mode-all-btn').addEventListener('click', () => {
+      STATE.genreMatchMode = 'ALL';
+      document.getElementById('mode-all-btn').classList.add('active');
+      document.getElementById('mode-any-btn').classList.remove('active');
+      showToast('Matching ALL selected genres (AND)', 'info');
+    });
+
+    // Custom Tag Form Submit
+    const customForm = document.getElementById('add-custom-tag-form');
+    const customInput = document.getElementById('custom-genre-input');
+    if (customForm && customInput) {
+      customForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const val = customInput.value;
+        if (val) {
+          addCustomTag(val);
+          customInput.value = '';
+        }
+      });
+    }
+
+    // Popular suggestions click
+    const suggestionsList = document.getElementById('popular-suggestions-list');
+    if (suggestionsList) {
+      suggestionsList.addEventListener('click', (e) => {
+        const btn = e.target.closest('.suggestion-chip');
+        if (btn && btn.dataset.tag) {
+          addCustomTag(btn.dataset.tag);
+        }
+      });
+    }
+
+    // Accordion Toggle
+    document.getElementById('adv-filter-toggle').addEventListener('click', () => {
+      const content = document.getElementById('adv-filter-content');
+      const trigger = document.getElementById('adv-filter-toggle');
+      const isExpanded = !content.classList.contains('hidden');
+
+      if (isExpanded) {
+        content.classList.add('hidden');
+        trigger.classList.add('collapsed');
+      } else {
+        content.classList.remove('hidden');
+        trigger.classList.remove('collapsed');
+      }
+    });
+
+    // Filter Inputs
+    document.getElementById('filter-mode').addEventListener('change', (e) => {
+      STATE.currentFilters.discoveryMode = e.target.value;
+    });
+
+    document.getElementById('filter-format').addEventListener('change', (e) => {
+      STATE.currentFilters.format = e.target.value;
+    });
+
+    const scoreSlider = document.getElementById('filter-score');
+    const scoreDisplay = document.getElementById('score-display');
+    scoreSlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      STATE.currentFilters.minScore = val;
+      scoreDisplay.textContent = val > 0 ? `${val}%+ Score` : 'Any Score';
+    });
+
+    document.getElementById('filter-era').addEventListener('change', (e) => {
+      STATE.currentFilters.era = e.target.value;
+    });
+
+    document.getElementById('filter-status').addEventListener('change', (e) => {
+      STATE.currentFilters.status = e.target.value;
+    });
+
+    document.getElementById('sfw-only-checkbox').addEventListener('change', (e) => {
+      STATE.currentFilters.sfwOnly = e.target.checked;
+    });
+
+    // Synopsis expand
+    document.getElementById('expand-synopsis-btn').addEventListener('click', (e) => {
+      const textElem = document.getElementById('anime-synopsis');
+      if (textElem.classList.contains('collapsed')) {
+        textElem.classList.remove('collapsed');
+        e.target.textContent = 'Show Less';
+      } else {
+        textElem.classList.add('collapsed');
+        e.target.textContent = 'Read More';
+      }
+    });
+
+    // Watchlist Save Button
+    document.getElementById('toggle-watchlist-btn').addEventListener('click', toggleWatchlistCurrentAnime);
+
+    // Watch Trailer Button
+    document.getElementById('watch-trailer-btn').addEventListener('click', openTrailerModal);
+    document.getElementById('close-trailer-btn').addEventListener('click', () => closeModal('trailer-modal'));
+
+    // Share / Copy Link
+    document.getElementById('copy-share-btn').addEventListener('click', () => {
+      if (!STATE.currentAnime) return;
+      const title = STATE.currentAnime.title.english || STATE.currentAnime.title.romaji;
+      const url = STATE.currentAnime.siteUrl || `https://anilist.co/anime/${STATE.currentAnime.id}`;
+      const shareText = `Check out "${title}" on AniList: ${url}`;
+
+      navigator.clipboard.writeText(shareText).then(() => {
+        showToast('Copied share link to clipboard!', 'success');
+      }).catch(() => {
+        showToast(`Anime: ${title}`, 'info');
+      });
+    });
+
+    // Similar Anime Button
+    document.getElementById('roll-similar-btn').addEventListener('click', () => {
+      if (!STATE.currentAnime || !STATE.currentAnime.genres) return;
+      STATE.selectedGenres.clear();
+      STATE.excludedGenres.clear();
+      // Pick top 2 genres from current anime
+      STATE.currentAnime.genres.slice(0, 2).forEach(g => STATE.selectedGenres.add(g));
+      renderGenreChips();
+      rollRandomAnime();
+      showToast(`Rolling similar anime for: ${Array.from(STATE.selectedGenres).join(', ')}`, 'info');
+    });
+
+    // Watchlist Modal
+    document.getElementById('watchlist-modal-btn').addEventListener('click', () => {
+      renderWatchlistModal();
+      document.getElementById('watchlist-modal').classList.remove('hidden');
+    });
+    document.getElementById('close-watchlist-btn').addEventListener('click', () => closeModal('watchlist-modal'));
+    document.getElementById('watchlist-search-input').addEventListener('input', renderWatchlistModal);
+    document.getElementById('clear-watchlist-btn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear your saved watchlist?')) {
+        STATE.watchlist = [];
+        saveWatchlist();
+        renderWatchlistModal();
+        showToast('Watchlist cleared', 'info');
+      }
+    });
+
+    // History Modal
+    document.getElementById('history-modal-btn').addEventListener('click', () => {
+      renderHistoryModal();
+      document.getElementById('history-modal').classList.remove('hidden');
+    });
+    document.getElementById('close-history-btn').addEventListener('click', () => closeModal('history-modal'));
+    document.getElementById('clear-history-btn').addEventListener('click', () => {
+      STATE.rollHistory = [];
+      saveHistory();
+      renderHistoryModal();
+      renderRecentReel();
+      showToast('Roll history cleared', 'info');
+    });
+
+    // Sound Toggle Button
+    const sfxBtn = document.getElementById('sfx-toggle-btn');
+    sfxBtn.addEventListener('click', () => {
+      STATE.soundEnabled = !STATE.soundEnabled;
+      const onIcon = sfxBtn.querySelector('.sfx-on-icon');
+      const offIcon = sfxBtn.querySelector('.sfx-off-icon');
+
+      if (STATE.soundEnabled) {
+        onIcon.classList.remove('hidden');
+        offIcon.classList.add('hidden');
+        showToast('Sound effects enabled', 'info');
+        playTickSound();
+      } else {
+        onIcon.classList.add('hidden');
+        offIcon.classList.remove('hidden');
+        showToast('Sound effects muted', 'info');
+      }
+    });
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        rollRandomAnime();
+      } else if (e.key === 'Escape') {
+        closeModal('trailer-modal');
+        closeModal('watchlist-modal');
+        closeModal('history-modal');
+      }
+    });
+
+    // Close modals on overlay backdrop click
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal(modal.id);
+        }
+      });
+    });
+  }
+
+  // ==========================================================================
+  // Initialization
+  // ==========================================================================
+
+  async function init() {
+    loadSavedData();
+    setupEventListeners();
+    await loadGenresAndTags();
+  }
+
+  // Launch on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,9 @@
+@echo off
+title AniPick Local Web Server
+echo ========================================================
+echo   AniPick - Starting Local Server on http://localhost:8080
+echo   Referrer-Policy: strict-origin-when-cross-origin
+echo ========================================================
+echo.
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$port = 8080; $url = 'http://localhost:' + $port + '/'; $listener = New-Object System.Net.HttpListener; $listener.Prefixes.Add($url); try { $listener.Start() } catch { Write-Host 'Port 8080 is in use, trying 8081...'; $port = 8081; $url = 'http://localhost:' + $port + '/'; $listener = New-Object System.Net.HttpListener; $listener.Prefixes.Add($url); $listener.Start() }; Start-Process $url; Write-Host ('Server listening at ' + $url + ' (Press Ctrl+C to stop)'); while ($listener.IsListening) { $ctx = $listener.GetContext(); $req = $ctx.Request; $res = $ctx.Response; $relPath = $req.Url.LocalPath.TrimStart('/'); if ([string]::IsNullOrEmpty($relPath) -or $relPath -eq '/') { $relPath = 'index.html' }; $fullPath = Join-Path $PSScriptRoot $relPath; if (-not (Test-Path $fullPath -PathType Leaf)) { $fullPath = Join-Path $PSScriptRoot 'index.html' }; $ext = [System.IO.Path]::GetExtension($fullPath).ToLower(); switch ($ext) { '.html' { $res.ContentType = 'text/html; charset=utf-8' } '.css' { $res.ContentType = 'text/css; charset=utf-8' } '.js' { $res.ContentType = 'application/javascript; charset=utf-8' } '.json' { $res.ContentType = 'application/json' } default { $res.ContentType = 'application/octet-stream' } }; $res.Headers.Add('Referrer-Policy', 'strict-origin-when-cross-origin'); $res.Headers.Add('Access-Control-Allow-Origin', '*'); try { $bytes = [System.IO.File]::ReadAllBytes($fullPath); $res.OutputStream.Write($bytes, 0, $bytes.Length) } catch {}; $res.Close() }"
+pause
