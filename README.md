@@ -2,9 +2,6 @@
 
 A sleek, responsive anime discovery web app powered directly by the official [AniList GraphQL API](https://anilist.co).
 
-![AniPick Preview](file:///C:/Users/HP%20800G1/.gemini/antigravity-ide/scratch/anime-randomizer/index.html)
-
----
 
 ## ✨ Features
 
